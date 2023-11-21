@@ -206,11 +206,25 @@ void ListeChainee<TypeInfo>::supprimeTete() {
 // VERSION AVEC CONTRÔLE AVANT ET UTILISATION DE getCelluleAtPositIter() qui ne lèvera pas d'exception !
 template<class TypeInfo>
 bool ListeChainee<TypeInfo>::insereAtPositIter(const int nouvellePosition, const TypeInfo &nouvelleInfo) {
-    /*
-     * À COMPLETER
-     */
-    // supprimer à partir d'ici après complétion
-    return false;
+
+    bool insertionPossible = (nouvellePosition >= 1) && (nouvellePosition <= nbCellules+1);
+    if (insertionPossible){
+        Cellule<TypeInfo> *ptrNouvelleCellule = new Cellule<TypeInfo>(nouvelleInfo);
+        if(nouvellePosition == 1){
+            ptrNouvelleCellule->setSuivante(ptrTete);
+            ptrTete = ptrNouvelleCellule;
+        }else{
+            Cellule<TypeInfo> *ptrCurrentCell = ptrTete;
+            for(int i = 1; i < (nouvellePosition-1);++i){
+                ptrCurrentCell = ptrCurrentCell->getRefSuivante();
+            }
+            if (ptrCurrentCell->getRefSuivante())
+                ptrNouvelleCellule->setSuivante(ptrCurrentCell->getRefSuivante());
+            ptrCurrentCell->setSuivante(ptrNouvelleCellule);
+        }
+        nbCellules++;
+    }
+    return insertionPossible;
 
 } // end inserePositIter
 
@@ -263,17 +277,20 @@ bool ListeChainee<TypeInfo>::supprimeAtPositIter(int position) {
 
     bool suppressionPossible = (position >= 1) && (position <= nbCellules);
     if(suppressionPossible){
-
-        if(position == 1)  ptrTete = ptrTete->getRefSuivante();
-        else{
+        Cellule<TypeInfo> *ptrCurrentCel;
+        if(position == 1){
+            ptrCurrentCel = ptrTete;
+            ptrTete = ptrTete->getRefSuivante();
+            delete ptrCurrentCel;
+        }else{
             Cellule<TypeInfo> *ptrPrecCel = ptrTete;
-            Cellule<TypeInfo> *ptrCurrentCel = ptrPrecCel->getRefSuivante();
+            ptrCurrentCel = ptrPrecCel->getRefSuivante();
             for (int i = 2; i < position; ++i){
                 ptrCurrentCel = ptrCurrentCel->getRefSuivante();
                 ptrPrecCel = ptrPrecCel->getRefSuivante();
             }
             ptrPrecCel->setSuivante(ptrCurrentCel->getRefSuivante());
-
+            delete ptrCurrentCel;
         }
         nbCellules--;
     }
