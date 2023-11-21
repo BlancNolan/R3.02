@@ -209,6 +209,7 @@ bool ListeChainee<TypeInfo>::insereAtPositIter(const int nouvellePosition, const
 
     bool insertionPossible = (nouvellePosition >= 1) && (nouvellePosition <= nbCellules+1);
     if (insertionPossible){
+
         Cellule<TypeInfo> *ptrNouvelleCellule = new Cellule<TypeInfo>(nouvelleInfo);
         if(nouvellePosition == 1){
             ptrNouvelleCellule->setSuivante(ptrTete);
@@ -348,11 +349,15 @@ TypeInfo ListeChainee<TypeInfo>::getInfoAtPositRecWorker(const Cellule<TypeInfo>
 
 template<class TypeInfo>
 bool ListeChainee<TypeInfo>::estInfoPresentRecWorker(Cellule<TypeInfo> *ptrCetteListe, TypeInfo &infoCible) const {
-    /*
-     * À COMPLETER
-     */
-    // supprimer à partir d'ici après complétion
-    return false;
+
+    if (ptrCetteListe->getInfo() == infoCible) return true;
+    else{
+        if (ptrCetteListe->getRefSuivante())
+            estInfoPresentRecWorker(ptrCetteListe->getRefSuivante(), infoCible);
+        else
+            return false;
+    }
+
 }
 
 // Rappel
