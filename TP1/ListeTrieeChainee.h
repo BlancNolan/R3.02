@@ -151,9 +151,15 @@ void ListeTrieeChainee<TypeInfo>::supprimeToutesDuplications() {
  */
 template<class TypeInfo>
 int ListeTrieeChainee<TypeInfo>::getPositIter(const TypeInfo& uneInfo) const {
-    /*
-     * A COMPLETER
-     */
+    Cellule<TypeInfo>* currentCell = ptrTete;
+    int pos = 1;
+    while(currentCell != NULL && uneInfo > currentCell->getInfo()){
+        pos++;
+        currentCell = currentCell->getRefSuivante();
+    }
+    if (currentCell == NULL) return -pos;
+    return uneInfo == currentCell->getInfo() ? pos : -pos;
+
 } // end getPositIter
 
 template<class TypeInfo>
@@ -180,8 +186,7 @@ void ListeTrieeChainee<TypeInfo>::insereRecWorker(Cellule<TypeInfo>*& ptrCetteLi
     if (!ptrCetteListe){
         ptrCetteListe = new Cellule<TypeInfo>(nouvelleInfo);
         nbCellules++;
-    }
-    else if(nouvelleInfo < ptrCetteListe->getInfo()) {
+    }else if(nouvelleInfo < ptrCetteListe->getInfo()) {
         Cellule<TypeInfo> *newCell = new Cellule<TypeInfo>();
         newCell->setSuivante(ptrCetteListe->getRefSuivante());
         newCell->setInfo(ptrCetteListe->getInfo());
@@ -202,11 +207,14 @@ void ListeTrieeChainee<TypeInfo>::insereRecWorker(Cellule<TypeInfo>*& ptrCetteLi
  */
 template<class TypeInfo>
 bool ListeTrieeChainee<TypeInfo>::supprimePremOccInfoRecWorker(Cellule<TypeInfo>*& ptrCetteListe, const TypeInfo & uneInfo) {
-    /*
-     * A COMPLETER
-     */
-    // supprimer à partir d'ici après complétion
-    return false;
+
+    if (ptrCetteListe == NULL){
+        return false;
+    }else if(ptrCetteListe->getInfo() == uneInfo){
+        supprimeTeteWorker(ptrCetteListe);
+        return true;
+    }else
+        supprimePremOccInfoRecWorker(ptrCetteListe->getRefSuivante(), uneInfo);
 }
 
 template<class TypeInfo>
