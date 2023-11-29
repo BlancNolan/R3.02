@@ -383,11 +383,15 @@ bool ArbreNoeudBinaireRecherche<TypeInfo>::estInfoPresenteRecWorker(NoeudBinaire
 
 template<class TypeInfo>
 bool ArbreNoeudBinaireRecherche<TypeInfo>::aMemeGeometrieQueRecWorker(const NoeudBinaire<TypeInfo>* monPtrRac, const NoeudBinaire<TypeInfo>* sonPtrRac) const {
-    /*
-     * A COMPLETER
-     */
-    // supprimer à partir de cette ligne après complétion
-    return false;
+
+    if (monPtrRac == nullptr)
+        return sonPtrRac== nullptr;
+    else if (sonPtrRac == nullptr)
+        return monPtrRac == nullptr;
+    else{
+        return aMemeGeometrieQueRecWorker(monPtrRac->getPtrFilsDroit(), sonPtrRac->getPtrFilsDroit())
+            && aMemeGeometrieQueRecWorker(monPtrRac->getPtrFilsGauche(), sonPtrRac->getPtrFilsGauche());
+    }
 }
 
 template<class TypeInfo>

@@ -237,7 +237,7 @@ void testAMemeGeometrieQue() {
     ptrArbre1->printPretty(2, 0, cout);
     cout << endl << "a-t-il la même géométrie que lui-même :" << endl;
     ptrArbre1->printPretty(2, 0, cout);
-    cout << endl << "--> Réponse = " << ptrArbre1->aMemeGeometrieQue(*ptrArbre1) << " ; doit être false !" << endl;
+    cout << endl << "--> Réponse = " << ptrArbre1->aMemeGeometrieQue(*ptrArbre1) << " ; doit être true !" << endl;
 
     ArbreNoeudBinaireRecherche<int>* ptrArbre2 = buildArbre3();
     cout << endl << "Un arbre binaire non vide :" << endl;
