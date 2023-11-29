@@ -150,7 +150,7 @@ void testeSupprimePremOccInfoIter(ListeTrieeChainee<string>*& ptrListe) {
     cout << "Après suppression de \"Jérôme\" (au milieu), la liste contient : ";
     ptrListe->afficheCroissantRec();
     cout << endl;
-    ptrListe->supprimePremOccInfoRec("Sophie");
+    ptrListe->supprimePremOccInfoIter("Sophie");
     cout << "Après suppression de \"Sophie\" (le dernier), la liste contient : ";
     ptrListe->afficheCroissantRec();
     cout << endl;
