@@ -183,11 +183,13 @@ public:
 
 template<class TypeInfo>
 int ArbreNoeudBinaireRecherche<TypeInfo>::getHauteurRecWorker(NoeudBinaire<TypeInfo>* ptrRac) const {
-    /*
-     * A COMPLETER
-     */
-    // supprimer à partir de cette ligne après complétion
-    return 0;
+
+    if (ptrRac == nullptr) {
+        return 0;
+    } else {
+        return 1 + max(getHauteurRecWorker(ptrRac->getPtrFilsGauche()),
+                       getHauteurRecWorker(ptrRac->getPtrFilsDroit()));
+    }
 } // end getHauteurRecWorker
 
 template<class TypeInfo>
@@ -407,8 +409,11 @@ TypeInfo ArbreNoeudBinaireRecherche<TypeInfo>::getMaxRecWorker(const NoeudBinair
     /*
      * A COMPLETER
      */
-    // supprimer à partir de cette ligne après complétion
-    return 0;
+    if(ptrRac->getPtrFilsDroit() == nullptr)
+        return ptrRac->getInfo();
+    else{
+        getMaxRecWorker(ptrRac->getPtrFilsDroit());
+    }
 }
 
 template<class TypeInfo>

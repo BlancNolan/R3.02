@@ -188,7 +188,7 @@ int main(void) {
     testHauteur();
     testGetNombreNoeuds();
     testEstInfoPresente();
-    // testGetMax();   // A DECOMMENTER LORSQUE L'INSERTION MARCHE
+    testGetMax();   // A DECOMMENTER LORSQUE L'INSERTION MARCHE
 
     return 0;
 } // end main
