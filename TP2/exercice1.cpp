@@ -182,7 +182,7 @@ void testGetMax() {
     }
 }
 
-int main() {
+int main(void) {
 
     testInsertAffiche();
     testHauteur();

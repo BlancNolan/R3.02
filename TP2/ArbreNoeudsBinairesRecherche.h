@@ -235,9 +235,15 @@ NoeudBinaire<TypeInfo>* ArbreNoeudBinaireRecherche<TypeInfo>::copieArbre(const N
 
 template<class TypeInfo>
 void ArbreNoeudBinaireRecherche<TypeInfo>::insertRecWorker(NoeudBinaire<TypeInfo>*& ptrRac, const TypeInfo& nouvelleInfo) {
-    /*
-     * A COMPLETER
-     */
+
+    if(ptrRac == nullptr){
+        ptrRac = new NoeudBinaire<TypeInfo>(nouvelleInfo);
+    }else{
+        if (ptrRac->getInfo() <= nouvelleInfo)
+            insertRecWorker(ptrRac->getRefPtrFilsDroit(), nouvelleInfo);
+        else
+            insertRecWorker(ptrRac->getRefPtrFilsGauche(), nouvelleInfo);
+    }
 } // end insertRecWorker
 
 template<class TypeInfo>
