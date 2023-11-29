@@ -151,9 +151,15 @@ void ListeTrieeChainee<TypeInfo>::supprimeToutesDuplications() {
  */
 template<class TypeInfo>
 int ListeTrieeChainee<TypeInfo>::getPositIter(const TypeInfo& uneInfo) const {
-    /*
-     * A COMPLETER
-     */
+    Cellule<TypeInfo>* ptrCurrentCell = ptrTete;
+    int pos = 1;
+    while(ptrCurrentCell != NULL && uneInfo > ptrCurrentCell->getInfo()){
+        pos++;
+        ptrCurrentCell = ptrCurrentCell->getRefSuivante();
+    }
+    if (ptrCurrentCell == NULL) return -pos;
+    return uneInfo == ptrCurrentCell->getInfo() ? pos : -pos;
+
 } // end getPositIter
 
 template<class TypeInfo>
@@ -176,9 +182,20 @@ int ListeTrieeChainee<TypeInfo>::getLongueur() const {
  */
 template<class TypeInfo>
 void ListeTrieeChainee<TypeInfo>::insereRecWorker(Cellule<TypeInfo>*& ptrCetteListe, const TypeInfo& nouvelleInfo) {
-    /*
-     * A COMPLETER
-     */
+
+    if (!ptrCetteListe){
+        ptrCetteListe = new Cellule<TypeInfo>(nouvelleInfo);
+        nbCellules++;
+    }else if(nouvelleInfo < ptrCetteListe->getInfo()) {
+        Cellule<TypeInfo> *newCell = new Cellule<TypeInfo>();
+        newCell->setSuivante(ptrCetteListe->getRefSuivante());
+        newCell->setInfo(ptrCetteListe->getInfo());
+        ptrCetteListe->setInfo(nouvelleInfo);
+        ptrCetteListe->setSuivante(newCell);
+        nbCellules++;
+    }else{
+        insereRecWorker(ptrCetteListe->getRefSuivante(), nouvelleInfo);
+    }
 }
 
 /**
@@ -190,11 +207,14 @@ void ListeTrieeChainee<TypeInfo>::insereRecWorker(Cellule<TypeInfo>*& ptrCetteLi
  */
 template<class TypeInfo>
 bool ListeTrieeChainee<TypeInfo>::supprimePremOccInfoRecWorker(Cellule<TypeInfo>*& ptrCetteListe, const TypeInfo & uneInfo) {
-    /*
-     * A COMPLETER
-     */
-    // supprimer à partir d'ici après complétion
-    return false;
+
+    if (!ptrCetteListe){
+        return false;
+    }else if(ptrCetteListe->getInfo() == uneInfo){
+        supprimeTeteWorker(ptrCetteListe);
+        return true;
+    }else
+        supprimePremOccInfoRecWorker(ptrCetteListe->getRefSuivante(), uneInfo);
 }
 
 template<class TypeInfo>
@@ -210,11 +230,17 @@ bool ListeTrieeChainee<TypeInfo>::supprimePremOccInfoRec(const TypeInfo & uneInf
  */
 template<class TypeInfo>
 bool ListeTrieeChainee<TypeInfo>::supprimePremOccInfoIter(const TypeInfo& uneInfo) {
-    /*
-     * A COMPLETER
-     */
-    // supprimer à partir d'ici après complétion
+
+    Cellule<TypeInfo> *ptrCurrentCell = ptrTete;
+    while(ptrCurrentCell && ptrCurrentCell->getInfo() != uneInfo){
+        ptrCurrentCell = ptrCurrentCell->getRefSuivante();
+    }
+    if (ptrCurrentCell){
+        supprimeTeteWorker(ptrCurrentCell);
+        return true;
+    }
     return false;
+
 }
 
 template<class TypeInfo>
