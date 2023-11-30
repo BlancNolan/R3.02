@@ -69,7 +69,7 @@ private:
     
     // retourne un pointeur sur le noeuds l'ABR ptrABR qui contient infoCible,
     // nullptr si infoCible non trouvée.
-    bool estInfoPresenteRecWorker(NoeudBinaire<TypeInfo>* ptrABR, const TypeInfo& infoCible) const;
+    bool estInfoPresenteRecWorker(const NoeudBinaire<TypeInfo>* ptrABR, const TypeInfo& infoCible) const;
 
     // copie l'ABR de rachine ptrABR et retourne un pointeur sur la copie.
     NoeudBinaire<TypeInfo>* copieArbre(const NoeudBinaire<TypeInfo>* ptrABR) const;
@@ -251,11 +251,21 @@ void ArbreNoeudBinaireRecherche<TypeInfo>::insertRecWorker(NoeudBinaire<TypeInfo
 template<class TypeInfo>
 TypeInfo ArbreNoeudBinaireRecherche<TypeInfo>::getAncetreCommunLePlusBasRecWorker(const NoeudBinaire<TypeInfo>* ptrRac,
                                                                                   const TypeInfo val1, const TypeInfo val2) const {
-    /*
-       * A COMPLETER
-       */
-    // supprimer à partir de cette ligne après complétion
-    return 0;
+
+    if(estInfoPresenteRecWorker(ptrRac->getPtrFilsDroit(), val1)
+        && estInfoPresenteRecWorker(ptrRac->getPtrFilsGauche(), val2)
+        || estInfoPresenteRecWorker(ptrRac->getPtrFilsGauche(), val1)
+          && estInfoPresenteRecWorker(ptrRac->getPtrFilsDroit(), val2)
+          || ptrRac->getInfo() == val1 && estInfoPresenteRecWorker(ptrRac, val2)
+          || ptrRac->getInfo() == val2 && estInfoPresenteRecWorker(ptrRac, val1))
+        return ptrRac->getInfo();
+    else{
+        if (estInfoPresenteRecWorker(ptrRac->getPtrFilsDroit(), val1))
+            return getAncetreCommunLePlusBasRecWorker(ptrRac->getPtrFilsDroit(), val1, val2);
+        else
+            return getAncetreCommunLePlusBasRecWorker(ptrRac->getPtrFilsGauche(), val1, val2);
+    }
+
 }
 
 /**
@@ -354,7 +364,7 @@ NoeudBinaire<TypeInfo>* ArbreNoeudBinaireRecherche<TypeInfo>::supprimeNoeudLePlu
 } // end supprimeNoeudLePlusAGauche
 
 template<class TypeInfo>
-bool ArbreNoeudBinaireRecherche<TypeInfo>::estInfoPresenteRecWorker(NoeudBinaire<TypeInfo>* ptrRac,
+bool ArbreNoeudBinaireRecherche<TypeInfo>::estInfoPresenteRecWorker(const NoeudBinaire<TypeInfo>* ptrRac,
                                                                     const TypeInfo& infoCible) const {
     // mettre en œuvre la recherche "dichotomique"
     // > ptrRac == nullptr -> retrun false; *
@@ -422,11 +432,9 @@ TypeInfo ArbreNoeudBinaireRecherche<TypeInfo>::getMaxRecWorker(const NoeudBinair
 
 template<class TypeInfo>
 bool ArbreNoeudBinaireRecherche<TypeInfo>::aPourSousArbreRecWorker(const NoeudBinaire<TypeInfo>* ptrRacCetArbre, const NoeudBinaire<TypeInfo>* ptrRacUnArbre) const {
-    /*
-     * A COMPLETER
-     */
-    // supprimer à partir de cette ligne après complétion
-    return false;
+
+    
+
 }
 
 //////////////////////////////////////////////////////////////
