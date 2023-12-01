@@ -84,6 +84,8 @@ private:
 
     bool aPourSousArbreRecWorker(const NoeudBinaire<TypeInfo>* ptrRacCetArbre, const NoeudBinaire<TypeInfo>* ptrRacUnArbre) const;
 
+    bool estPliableRecWorker(const NoeudBinaire<TypeInfo>* ptrSousArbDroit, const NoeudBinaire<TypeInfo>* ptrSousArbGauche) const;
+
     TypeInfo getMaxRecWorker(const NoeudBinaire<TypeInfo>* ptrRac) const;
 
     // workers pour printPretty (l'implantation est fournie)
@@ -96,6 +98,7 @@ private:
     void printNodes(int branchLen, int nodeSpaceLen, int startLen, int nodesInThisLevel, const deque<NoeudBinaire<TypeInfo>*>& nodesQueue, ostream& out);
     
     void printLeaves(int indentSpace, int level, int nodesInThisLevel, const deque<NoeudBinaire<TypeInfo>*>& nodesQueue, ostream& out);
+
 
 
 public:
@@ -251,7 +254,6 @@ void ArbreNoeudBinaireRecherche<TypeInfo>::insertRecWorker(NoeudBinaire<TypeInfo
 template<class TypeInfo>
 TypeInfo ArbreNoeudBinaireRecherche<TypeInfo>::getAncetreCommunLePlusBasRecWorker(const NoeudBinaire<TypeInfo>* ptrRac,
                                                                                   const TypeInfo val1, const TypeInfo val2) const {
-
     if(estInfoPresenteRecWorker(ptrRac->getPtrFilsDroit(), val1)
         && estInfoPresenteRecWorker(ptrRac->getPtrFilsGauche(), val2)
         || estInfoPresenteRecWorker(ptrRac->getPtrFilsGauche(), val1)
@@ -395,7 +397,7 @@ template<class TypeInfo>
 bool ArbreNoeudBinaireRecherche<TypeInfo>::aMemeGeometrieQueRecWorker(const NoeudBinaire<TypeInfo>* monPtrRac, const NoeudBinaire<TypeInfo>* sonPtrRac) const {
 
     if (monPtrRac == nullptr)
-        return sonPtrRac== nullptr;
+        return sonPtrRac == nullptr;
     else if (sonPtrRac == nullptr)
         return monPtrRac == nullptr;
     else{
@@ -406,11 +408,16 @@ bool ArbreNoeudBinaireRecherche<TypeInfo>::aMemeGeometrieQueRecWorker(const Noeu
 
 template<class TypeInfo>
 bool ArbreNoeudBinaireRecherche<TypeInfo>::estEgalARecWorker(const NoeudBinaire<TypeInfo>* monPtrRac, const NoeudBinaire<TypeInfo>* sonPtrRac) const {
-    /*
-     * A COMPLETER
-     */
-    // supprimer à partir de cette ligne après complétion
-    return false;
+
+    if (monPtrRac == nullptr)
+        return sonPtrRac == nullptr;
+    else if (sonPtrRac == nullptr)
+        return monPtrRac == nullptr;
+    else{
+        return  monPtrRac->getInfo() == sonPtrRac->getInfo()
+            && estEgalARecWorker(monPtrRac->getPtrFilsDroit(), sonPtrRac->getPtrFilsDroit())
+            && estEgalARecWorker(monPtrRac->getPtrFilsGauche(), sonPtrRac->getPtrFilsGauche());
+    }
 }
 
 /**
@@ -420,9 +427,7 @@ bool ArbreNoeudBinaireRecherche<TypeInfo>::estEgalARecWorker(const NoeudBinaire<
  */
 template<class TypeInfo>
 TypeInfo ArbreNoeudBinaireRecherche<TypeInfo>::getMaxRecWorker(const NoeudBinaire<TypeInfo>* ptrRac) const {
-    /*
-     * A COMPLETER
-     */
+
     if(ptrRac->getPtrFilsDroit() == nullptr)
         return ptrRac->getInfo();
     else{
@@ -430,10 +435,34 @@ TypeInfo ArbreNoeudBinaireRecherche<TypeInfo>::getMaxRecWorker(const NoeudBinair
     }
 }
 
+
 template<class TypeInfo>
 bool ArbreNoeudBinaireRecherche<TypeInfo>::aPourSousArbreRecWorker(const NoeudBinaire<TypeInfo>* ptrRacCetArbre, const NoeudBinaire<TypeInfo>* ptrRacUnArbre) const {
 
-    
+    if (ptrRacUnArbre == nullptr)
+        return true;
+    else if (ptrRacCetArbre == nullptr)
+        return ptrRacUnArbre == nullptr;
+    else if (ptrRacCetArbre->getInfo() == ptrRacUnArbre->getInfo())
+        return estEgalARecWorker(ptrRacCetArbre, ptrRacUnArbre);
+    else {
+        if (estInfoPresenteRecWorker(ptrRacCetArbre->getPtrFilsDroit(), ptrRacUnArbre->getInfo()))
+            return aPourSousArbreRecWorker(ptrRacCetArbre->getPtrFilsDroit(), ptrRacUnArbre);
+        else
+            return aPourSousArbreRecWorker(ptrRacCetArbre->getPtrFilsGauche(), ptrRacUnArbre);
+    }
+}
+template <class TypeInfo>
+bool ArbreNoeudBinaireRecherche<TypeInfo>::estPliableRecWorker(const NoeudBinaire<TypeInfo>* ptrSousArbreDroit,
+                                                               const NoeudBinaire<TypeInfo>* ptrSousArbGauche) const{
+    if (ptrSousArbreDroit == nullptr)
+        return ptrSousArbGauche == nullptr;
+    else if(ptrSousArbGauche == nullptr)
+        return ptrSousArbreDroit == nullptr;
+    else{
+        return estPliableRecWorker(ptrSousArbGauche->getPtrFilsGauche(), ptrSousArbreDroit->getPtrFilsDroit())
+         && estPliableRecWorker(ptrSousArbGauche->getPtrFilsDroit(), ptrSousArbreDroit->getPtrFilsGauche());
+    }
 
 }
 
@@ -584,11 +613,9 @@ bool ArbreNoeudBinaireRecherche<TypeInfo>::aPourSousArbre(const ArbreNoeudBinair
 
 template<class TypeInfo>
 bool ArbreNoeudBinaireRecherche<TypeInfo>::estPliable() const {
-    /*
-     * A COMPLETER
-     */
-    // supprimer à partir de cette ligne après complétion
-    return false;
+
+    return ptrRacine == nullptr || ptrRacine->estFeuille()
+        || estPliableRecWorker(ptrRacine->getPtrFilsDroit(), ptrRacine->getPtrFilsGauche());
 }
 
 //////////////////////////////////////////////////////////////
