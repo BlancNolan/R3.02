@@ -235,29 +235,48 @@ void Mondial::printCountryBorders(string countryName) const {
  * A COMPLETER
  */
 XMLElement* Mondial::getRiverXmlelementFromNameIter(string riverName) const {
-    /*
-     * A COMPLETER
-     */
-    // supprimer à partir d'ici après complétion
-    return nullptr;
+
+    // premier fils de la catégorie <riverscategory>
+    XMLElement* currentRiverElementPtr = racineMondial->FirstChildElement("riverscategory")->FirstChildElement();
+
+    //condition de sorti du while : soit on a parcouru toute les rivers, soit on a trouver la river où <name> vaut riverName
+    while(currentRiverElementPtr && currentRiverElementPtr->FirstChildElement("name")->GetText() != riverName){
+        currentRiverElementPtr = currentRiverElementPtr->NextSiblingElement();
+    }
+    return currentRiverElementPtr;
 }
 
 /*
  * A COMPLETER
  */
 void Mondial::printAllCountriesCrossedByRiver(string riverName) const {
-    /*
-     * A COMPLETER
-     */
+
+    // reccupération de l'élément river qui possède le nom riverName
+    XMLElement *riverPtr = getRiverXmlelementFromNameIter(riverName);
+
+    if (!riverPtr)
+        cout << "Le fleuve : "<<riverName<<", n'existe pas !" <<endl;
+    else{
+        cout << "Le fleuve : "<< riverName << "\n  traverse les pays suivants : ";
+
+        //reccupération de la liste de codes de pays traversés par la rivière
+        string s = riverPtr->Attribute("country");
+        //séparation de la liste avec le charactère " "
+        vector<string> listeCountry = split(s, atoi(" "));
+
+        for(string st : listeCountry){
+            cout << getCountryXmlelementFromCode(st)->FirstChildElement("name")->GetText() << ", ";
+        }
+        cout <<"il a la longueur suivante : "<<riverPtr->FirstChildElement("length")->GetText()<< endl;
+    }
+
 }
 
 /*
  * A COMPLETER
  */
 void Mondial::printCountriesWithProvincesCrossedByRiver(string riverName) const {
-    /*
-     * A COMPLETER
-     */
+
 }
 
 /*
