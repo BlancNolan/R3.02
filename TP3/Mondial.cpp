@@ -163,11 +163,13 @@ string Mondial::getCountryCodeFromName(string countryName) const throw (PrecondV
  * @return pointeur sur l'élément <country> dont la valeur du fils <name> est égal à countryName, nullprt sinon
  */
 XMLElement* Mondial::getCountryXmlelementFromNameIter(string countryName) const {
-    /*
-     * A COMPLETER
-     */
-    // supprimer à partir d'ici après complétion
-    return nullptr;
+
+    XMLElement* currentCountryElementPtr = racineMondial->FirstChildElement("countriescategory")->FirstChildElement();
+    while( currentCountryElementPtr && currentCountryElementPtr->FirstChildElement("name")->GetText() != countryName){
+        currentCountryElementPtr = currentCountryElementPtr->NextSiblingElement();
+    }
+
+    return currentCountryElementPtr;
 }
 
 /**
@@ -178,11 +180,11 @@ XMLElement* Mondial::getCountryXmlelementFromNameIter(string countryName) const 
 int Mondial::getCountryPopulationFromName(string countryName) const {
 
     //réccuperation du pointeur du pays <countryName>
-    XMLElement *country = getCountryXmlelementFromNameRec(countryName);
+    XMLElement *country = getCountryXmlelementFromNameIter(countryName);
 
-    if (!country)return -1;
+    if (!country) return -1;
     else{
-        if(country->FirstChildElement("population")) return static_cast<unsigned int>(country->LastChildElement("population")->GetText());
+        if(country->FirstChildElement("population")) return atoi(country->LastChildElement("population")->GetText());
         else return 0;
     }
 
