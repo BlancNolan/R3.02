@@ -196,21 +196,39 @@ int Mondial::getCountryPopulationFromName(string countryName) const {
  * @return
  */
 XMLElement* Mondial::getCountryXmlelementFromCode(string countryCode) const {
-    /*
-     * A COMPLETER
-     */
-    // supprimer à partir d'ici après complétion
-    return nullptr;
+
+    XMLElement* currentCountryElementPtr = racineMondial->FirstChildElement("countriescategory")->FirstChildElement();
+    while(currentCountryElementPtr && currentCountryElementPtr->Attribute("car_code") != countryCode){
+        currentCountryElementPtr = currentCountryElementPtr->NextSiblingElement();
+    }
+    return currentCountryElementPtr;
 }
 
 /*
  * A COMPLETER
  */
 void Mondial::printCountryBorders(string countryName) const {
-    /*
-     * A COMPLETER
-     */
-    // supprimer à partir d'ici après complétion
+
+    //reccuperation du pointeur de l'élément pays ayant pour nom <countryName>
+    XMLElement* countryPtr = getCountryXmlelementFromNameRec(countryName);
+
+    if(!countryPtr){
+        cout << "Le pays : " << countryName << ", n'existe pas !" << endl;
+    }else{
+        if(!countryPtr->FirstChildElement("border")){
+            cout << "Le pays : "<<countryName <<", n'a pas de pays frontalier !" << endl;
+        }else{
+            cout << "Le pays : "<< countryName << endl;
+            XMLElement* currentBorderPtr = countryPtr->FirstChildElement("border");
+            while(currentBorderPtr){
+                cout << "  est frontalier avec : "
+                    << getCountryXmlelementFromCode(currentBorderPtr->Attribute("country"))->FirstChildElement("name")->GetText()
+                    <<", la longueur de sa frontière avec celui-ci est : "<<currentBorderPtr->Attribute("length") << endl;
+
+                currentBorderPtr= currentBorderPtr->NextSiblingElement("border");
+            }
+        }
+    }
 }
 
 /*
