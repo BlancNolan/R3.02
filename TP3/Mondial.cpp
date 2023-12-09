@@ -262,10 +262,10 @@ void Mondial::printAllCountriesCrossedByRiver(string riverName) const {
         //reccupération de la liste de codes de pays traversés par la rivière
         string s = riverPtr->Attribute("country");
         //séparation de la liste avec le charactère " "
-        vector<string> listeCountry = split(s, atoi(" "));
-
-        for(string st : listeCountry){
-            cout << getCountryXmlelementFromCode(st)->FirstChildElement("name")->GetText() << ", ";
+        vector<string> listeCountry = split(s, ' ');
+        //affichage de la liste des pays
+        for(string ss : listeCountry){
+            cout << getCountryXmlelementFromCode(ss)->FirstChildElement("name")->GetText() << ", ";
         }
         cout <<"il a la longueur suivante : "<<riverPtr->FirstChildElement("length")->GetText()<< endl;
     }
@@ -277,15 +277,76 @@ void Mondial::printAllCountriesCrossedByRiver(string riverName) const {
  */
 void Mondial::printCountriesWithProvincesCrossedByRiver(string riverName) const {
 
+    // reccupération de l'élément river qui possède le nom riverName
+    XMLElement *riverPtr = getRiverXmlelementFromNameIter(riverName);
+
+    if (!riverPtr)
+        cout << "Le fleuve : "<<riverName<<", n'existe pas !" <<endl;
+    else {
+        cout << "Le fleuve : " << riverName << "\n  traverse les pays suivants : ";
+        XMLElement *currentLocatedRiverPtr = riverPtr->FirstChildElement("located");
+        while(currentLocatedRiverPtr){
+            cout << getCountryXmlelementFromCode(currentLocatedRiverPtr->Attribute("country"))->FirstChildElement("name")->GetText() << ", ";
+            currentLocatedRiverPtr = currentLocatedRiverPtr->NextSiblingElement("located");
+        }
+        cout <<"il a la longueur suivante : "<<riverPtr->FirstChildElement("length")->GetText()<< endl;
+    }
 }
 
 /*
  * A COMPLETER
  */
 void Mondial::printCountriesAndProvincesCrossedByRiver(string riverName) const {
-    /*
-     * A COMPLETER
-     */
+    // reccupération de l'élément river qui possède le nom riverName
+    XMLElement *riverPtr = getRiverXmlelementFromNameIter(riverName);
+
+    if (!riverPtr)
+        cout << "Le fleuve : "<<riverName<<", n'existe pas !" <<endl;
+    else {
+        cout << "Le fleuve : " << riverName << " de longueur "<<riverPtr->FirstChildElement("length")->GetText()
+            <<" traverse les pays suivants :"<< endl;
+        //reccupérer la chaîne des pays traversé :
+        string s = riverPtr->Attribute("country");
+        //séparation des pays dans un vecteur :
+        vector<string> listePays = split(s, ' ');
+        //reccupération de l'élément <located>
+        XMLElement *currentLocatedElementPtr = riverPtr->FirstChildElement("located");
+        //liste des élements <located>
+        vector<string> locateds;
+        while(currentLocatedElementPtr){
+            locateds.emplace_back(currentLocatedElementPtr->Attribute("country"));
+            currentLocatedElementPtr = currentLocatedElementPtr->NextSiblingElement("located");
+        }
+        currentLocatedElementPtr = riverPtr->FirstChildElement("located");
+        for(string ss : listePays){
+            XMLElement *currentCountryPtr = getCountryXmlelementFromCode(ss);
+
+            if (count(locateds.begin(), locateds.end(), ss)){
+                cout << "  - " << currentCountryPtr->FirstChildElement("name")->GetText()
+                    <<", où il traverse les divisions administratives suivantes : "<<endl;
+                //reccupération du bon element <located>
+                while(currentLocatedElementPtr->Attribute("country") != ss){
+                    currentLocatedElementPtr = currentLocatedElementPtr->NextSiblingElement("located");
+                }
+
+                //reccupérer la chaîne des provinces traversées :
+                string provinces = currentLocatedElementPtr->Attribute("province");
+                //séparation des provinces dans un vecteur :
+                vector<string> listeProvince = split(provinces, ' ');
+                //reccupération de la premiere province de currentCountryPtr
+                XMLElement *currentProvincePtr = currentCountryPtr->FirstChildElement("province");
+                while(currentProvincePtr){
+                    if (count(listeProvince.begin(), listeProvince.end(), currentProvincePtr->Attribute("id")))
+                        cout << "\t * "<<currentProvincePtr->FirstChildElement("name")->GetText() <<endl;
+                    currentProvincePtr = currentProvincePtr->NextSiblingElement("province");
+                }
+
+                currentLocatedElementPtr = riverPtr->FirstChildElement("located");
+            }else{
+                cout << "  - " << currentCountryPtr->FirstChildElement("name")->GetText() << endl;
+            }
+        }
+    }
 }
 
 /*
