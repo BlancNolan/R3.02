@@ -353,9 +353,42 @@ void Mondial::printCountriesAndProvincesCrossedByRiver(string riverName) const {
  * A COMPLETER
  */
 void Mondial::printCityInformation(string cityName) const {
-    /*
-     * A COMPLETER
-     */
+
+    //recherche de l'élémnet de <city> possèdant le fils <name> valant cityName
+    XMLElement *currentCountryPtr = racineMondial->FirstChildElement("countriescategory")->FirstChildElement();
+    XMLElement *currentProvincePtr = nullptr;
+    XMLElement *currentCityPtr = nullptr;
+    while(currentCountryPtr){
+        currentProvincePtr = currentCountryPtr->FirstChildElement("province");
+        while(currentProvincePtr){
+            currentCityPtr = currentProvincePtr->FirstChildElement("city");
+            while(currentCityPtr && currentCityPtr->FirstChildElement("name")->GetText() != cityName){
+                currentCityPtr = currentCityPtr->NextSiblingElement("city");
+            }
+            if (currentCityPtr) break;
+            currentProvincePtr = currentProvincePtr->NextSiblingElement("province");
+        }
+        if (currentCityPtr) break;
+        currentCityPtr = currentCountryPtr->FirstChildElement("city");
+        while(currentCityPtr && currentCityPtr->FirstChildElement("name")->GetText() != cityName){
+            currentCityPtr = currentCityPtr->NextSiblingElement("city");
+        }
+        if (currentCityPtr) break;
+        currentCountryPtr = currentCountryPtr->NextSiblingElement();
+    }
+    if (!currentCityPtr){
+        cout << "La ville "<<cityName<<", n'existe pas !" << endl;
+    }else{
+        cout << "La ville "<<cityName
+            << "\n - se trouve dans le pays : "<<currentCountryPtr->FirstChildElement("name")->GetText()<<endl;
+        if (currentProvincePtr){
+            cout << " - dans la division adminstrative : "<<currentProvincePtr->FirstChildElement("name")->GetText()<< endl;
+        }
+        cout <<" - sa latitude est : "<<currentCityPtr->FirstChildElement("latitude")->GetText()
+        <<"\n - sa longitude est : "<<currentCityPtr->FirstChildElement("longitude")->GetText()
+        <<"\n - son altitude est : "<<currentCityPtr->FirstChildElement("elevation")->GetText()
+        <<"\n - sa population est : "<<currentCityPtr->LastChildElement("population")->GetText()<<endl;
+    }
 }
 
 /**
