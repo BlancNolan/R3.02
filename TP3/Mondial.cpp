@@ -358,24 +358,27 @@ void Mondial::printCityInformation(string cityName) const {
     XMLElement *currentCountryPtr = racineMondial->FirstChildElement("countriescategory")->FirstChildElement();
     XMLElement *currentProvincePtr = nullptr;
     XMLElement *currentCityPtr = nullptr;
-    while(currentCountryPtr){
+    bool flag = false;
+    while(currentCountryPtr && !flag){
         currentProvincePtr = currentCountryPtr->FirstChildElement("province");
-        while(currentProvincePtr){
+        while(currentProvincePtr && !flag){
             currentCityPtr = currentProvincePtr->FirstChildElement("city");
             while(currentCityPtr && currentCityPtr->FirstChildElement("name")->GetText() != cityName){
                 currentCityPtr = currentCityPtr->NextSiblingElement("city");
             }
-            if (currentCityPtr) break;
-            currentProvincePtr = currentProvincePtr->NextSiblingElement("province");
+            if (currentCityPtr) flag = true;
+            if (!flag) currentProvincePtr = currentProvincePtr->NextSiblingElement("province");
         }
-        if (currentCityPtr) break;
-        currentCityPtr = currentCountryPtr->FirstChildElement("city");
-        while(currentCityPtr && currentCityPtr->FirstChildElement("name")->GetText() != cityName){
-            currentCityPtr = currentCityPtr->NextSiblingElement("city");
+        if (!flag) {
+            currentCityPtr = currentCountryPtr->FirstChildElement("city");
+            while (currentCityPtr && currentCityPtr->FirstChildElement("name")->GetText() != cityName) {
+                currentCityPtr = currentCityPtr->NextSiblingElement("city");
+            }
+            if (currentCityPtr) flag = true;
+            if (!flag) currentCountryPtr = currentCountryPtr->NextSiblingElement();
         }
-        if (currentCityPtr) break;
-        currentCountryPtr = currentCountryPtr->NextSiblingElement();
     }
+
     if (!currentCityPtr){
         cout << "La ville "<<cityName<<", n'existe pas !" << endl;
     }else{
