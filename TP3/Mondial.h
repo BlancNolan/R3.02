@@ -85,6 +85,12 @@ private:
 
     XMLElement* getRiverXmlelementFromNameIter(string riverName) const;
 
+    XMLElement* getSeaXmlelementFromIdRec(string idSea) const;
+
+    XMLElement* getSeaXmlelementFromIdRecWorker(XMLElement* currentIslandElement, string idSea) const;
+
+
+
     // Procédures de découpage des chaînes en mots
 
     template<typename Out>

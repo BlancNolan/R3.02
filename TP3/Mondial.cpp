@@ -36,7 +36,7 @@ int Mondial::getNbAirports() const {
     // 1) accéder au premier fils <airport> de <airportscategory>
     XMLElement* currentAirport = airportsCategory->FirstChildElement();
     // 2) parcourir tous les <airport> qui sont des frères
-    while (currentAirport != nullptr) {
+    while (currentAirport) {
         // un aéroport supplémentaire
         nb = nb + 1;
         // avancer au frère <airport> suivant de currentAirport
@@ -58,7 +58,7 @@ void Mondial::printCountriesCode() const {
     // 1) accéder au premier fils <country> de <countriescategory>
     XMLElement* currentCountry = countriesCategory->FirstChildElement();
     // 2) parcourir tous les <country> qui sont des frères
-    while (currentCountry != nullptr) {
+    while (currentCountry) {
         // traiter le pays courant
         //      1) récupérer la valeur de l’attribut "car_code"
         carcodeValue = currentCountry->Attribute("car_code");
@@ -86,7 +86,7 @@ int Mondial::getNbDeserts() const {
     // 1) accéder au premier fils <dessert> de <desertscategory>
     XMLElement* currentDessert = dessertsCategory->FirstChildElement();
     // 2) parcourir tous les <dessert> qui sont des frères
-    while (currentDessert != nullptr) {
+    while (currentDessert) {
         // un dessert supplémentaire
         nbDessert += 1;
         // avancer au frère <dessert> suivant de currentDessert
@@ -113,7 +113,7 @@ int Mondial::getNbElemCat(const string categoryName) {
     // 1) accéder au premier fils <Name> de <categoryName>
     XMLElement* currentElement = elementCategory->FirstChildElement();
     // 2) parcourir tous les <Name> qui sont des frères
-    while (currentElement != nullptr) {
+    while (currentElement) {
         // un element supplémentaire
         nbelement += 1;
         // avancer au frère <name> suivant de currentElement
@@ -297,15 +297,55 @@ void Mondial::printCityInformation(string cityName) const {
      */
 }
 
+XMLElement *Mondial::getSeaXmlelementFromIdRec(string idSea) const {
+    return getSeaXmlelementFromIdRecWorker(racineMondial->FirstChildElement("seascategory")->FirstChildElement(), idSea);
+}
+
+XMLElement *
+Mondial::getSeaXmlelementFromIdRecWorker(XMLElement *currentIslandElement, string idSea) const {
+
+    if (!currentIslandElement) return nullptr;
+    else if(currentIslandElement->Attribute("id") == idSea) return currentIslandElement;
+    else return getSeaXmlelementFromIdRecWorker(currentIslandElement->NextSiblingElement(), idSea);
+}
+
 /**
  * Exemple de question additionnelle pour l'exercice 9 afficher toutes les informations disponibles
  * dans Mondial concernant toutes les îles.
  * On peut commencer par une île en particulier à partir de son nom
  */
 void Mondial::printIslandsInformations() const {
-    /*
-     * A COMPLETER
-     */
+
+    //reccupération du premier element <island> de <islandscategory>
+    XMLElement* currentIslandPtr =  racineMondial->FirstChildElement("islandscategory")->FirstChildElement();
+
+    //boucle d'affichage des informations pour toutes les îles
+    while(currentIslandPtr){
+        //introduction sur l'île
+        cout << "L'île " << currentIslandPtr->FirstChildElement("name")->GetText() << " fait "
+        << currentIslandPtr->FirstChildElement("area") << " km carrés et appartient à :" << endl;
+
+        //mise dans un vecteur et affichage de l'ensemble des pays qui possèdent l'île
+        string countries = currentIslandPtr->Attribute("country");
+        vector<string> listeCountry = split(countries,' ');
+        for(string code : listeCountry){
+            XMLElement* currentCountriePtr = getCountryXmlelementFromCode(code);
+            cout << "\t* "<< currentCountriePtr->FirstChildElement("name")->GetText() <<endl;
+        }
+
+        cout << "- l'île est entourée par :" << endl;
+        //mise dans un vecteur et affichage des mer et océan entourant l'île
+        string seas = currentIslandPtr->Attribute("sea");
+        vector<string> listeSea = split(seas, ' ');
+        for(string idSea : listeSea){
+            XMLElement* currentSeaPtr = getSeaXmlelementFromIdRec(idSea);
+            cout << "\t* "<< currentSeaPtr->FirstChildElement("name")->GetText() <<endl;
+        }
+
+        //
+
+
+    }
 }
 
 /*
