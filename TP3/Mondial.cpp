@@ -584,6 +584,9 @@ void Mondial::printIslandsInformations() const {
     }
 }
 
+/**
+ * Affiche les informations sur les aéroports du pays <countryName> (nom, ville, latitude, longitude, altitude, fuseau horaire)
+ */
 void Mondial::printAirportFromOfCountry(string countryName) const {
     // recuperation du code du pays
     string code = "";
