@@ -196,7 +196,7 @@ void testPrintCityInformation(Mondial& theMondial) {
     cout << endl;
 }
 
-void testPrintIslandsInformation(Mondial( &theMondial)){
+void testPrintIslandsInformation(Mondial &theMondial){
     cout << endl << "******************************" << endl;
     cout << "*                            *" << endl;
     cout << "* Informations sur les îles  *" << endl;
@@ -204,6 +204,21 @@ void testPrintIslandsInformation(Mondial( &theMondial)){
     cout << "******************************" << endl << endl;
 
     theMondial.printIslandsInformations();
+}
+
+void testPrintAirportFromOfCountry(Mondial &theMondial){
+    cout << endl << "***********************************" << endl;
+    cout << "*                                 *" << endl;
+    cout << "* Informations sur les aéroports  *" << endl;
+    cout << "*                                 *" << endl;
+    cout << "***********************************" << endl << endl;
+
+    theMondial.printAirportFromOfCountry("United States");
+    cout<< endl;
+    theMondial.printAirportFromOfCountry("Liechtenstein");
+    cout<< endl;
+    theMondial.printAirportFromOfCountry("Test");
+    cout<< endl;
 }
 
 int main() {
@@ -238,6 +253,7 @@ int main() {
     testPrintCountriesAndProvincesCrossedByRiver(theMondial);
     testPrintCityInformation(theMondial);
     testPrintIslandsInformation(theMondial);
+    testPrintAirportFromOfCountry(theMondial);
 
     //theMondial.printIslandsInformations();
 

@@ -45,6 +45,8 @@ public:
     
     void printIslandsInformations() const;
 
+    void printAirportFromOfCountry(string countryName) const;
+
 
     void Print();
 

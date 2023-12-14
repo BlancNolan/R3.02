@@ -74609,7 +74609,7 @@
    <airport iatacode="PIS" city="cty-France-Poitiers" country="F">
       <name>Biard</name>
       <latitude>46.587745</latitude>
-      <longitude>.306666</longitude>
+      <longitude>0.306666</longitude>
       <elevation>129</elevation>
       <gmtOffset>1</gmtOffset>
    </airport>
@@ -74680,7 +74680,7 @@
    <airport iatacode="TUF" city="cty-France-25" country="F">
       <name>Val De Loire</name>
       <latitude>47.432222</latitude>
-      <longitude>.727606</longitude>
+      <longitude>0.727606</longitude>
       <elevation>109</elevation>
       <gmtOffset>1</gmtOffset>
    </airport>
@@ -74737,7 +74737,7 @@
    </airport>
    <airport iatacode="LBV" city="cty-Gabon-Libreville" country="G">
       <name>Leon M Ba</name>
-      <latitude>.4586</latitude>
+      <latitude>0.4586</latitude>
       <longitude>9.412283</longitude>
       <elevation>12</elevation>
       <gmtOffset>1</gmtOffset>

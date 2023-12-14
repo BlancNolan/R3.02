@@ -81,7 +81,7 @@ void Mondial::printCountriesCode() const {
 
 
 /**
- * Retourne le nombre de dessert présents dans le fichier XML
+ * Retourne le nombre de déserts présents dans le fichier XML
  * @return valeur du nombre de dessert
  */
 int Mondial::getNbDeserts() const {
@@ -420,6 +420,8 @@ void Mondial::printCityInformation(string cityName) const {
     }
 }
 
+/*---------------------------------  METHODES DE L'EXERCICE 9   ---------------------------------*/
+
 /**
  * reccupère le XMLElement fils de <categorie> ayant son identifiant valant "id"
  * @throw PrecondVioleeExcep si la catégorie n'existe pas
@@ -581,6 +583,103 @@ void Mondial::printIslandsInformations() const {
         currentIslandPtr = currentIslandPtr->NextSiblingElement();
     }
 }
+
+void Mondial::printAirportFromOfCountry(string countryName) const {
+    // recuperation du code du pays
+    string code = "";
+    try{
+        code = getCountryCodeFromName(countryName);
+    }catch (PrecondVioleeExcep &e){
+        cout << e.what() << endl;
+    }
+
+    if(!code.empty()){
+        // création d'un vecteur contenant les elements <airport> du pays
+        vector<XMLElement *> listeAirPort;
+
+        // récuperation du premier <airport>
+        XMLElement *currentAirport = racineMondial->FirstChildElement("airportscategory")->FirstChildElement();
+        //parcour des airport
+        while (currentAirport) {
+            // si le code du pays correspond à celui de l'airport
+            if (currentAirport->Attribute("country") == code) {
+                // on l'ajoute au vecteur
+                listeAirPort.push_back(currentAirport);
+            }
+            // on passe à l'airport suivant
+            currentAirport = currentAirport->NextSiblingElement();
+        }
+
+        if (listeAirPort.empty()){
+            cout << "Le pays : "<<countryName <<", n'a pas d'aéroport !" << endl;
+        }else{
+            cout << "Les aéroport de "<<countryName << " :"<<endl;
+
+            for (XMLElement* airportPtr : listeAirPort){
+                cout << "L'aéroport : "<< airportPtr->FirstChildElement("name")->GetText();
+                if (airportPtr->Attribute("city")) {
+                    //recherche de l'élémnet de <city> possèdant l'attribut id valant airport->Attribute("city")
+                    XMLElement *currentCountryPtr = racineMondial->FirstChildElement(
+                            "countriescategory")->FirstChildElement();
+                    XMLElement *currentProvincePtr = nullptr;
+                    XMLElement *currentCityPtr = nullptr;
+                    string cityId = airportPtr->Attribute("city");
+                    bool flag = false; // booléen de sortie de boucle si la ville est trouvé
+                    while (currentCountryPtr && !flag) {
+                        currentProvincePtr = currentCountryPtr->FirstChildElement("province");
+
+                        while (currentProvincePtr && !flag) {
+                            currentCityPtr = currentProvincePtr->FirstChildElement("city");
+                            while (currentCityPtr && currentCityPtr->Attribute("id") != cityId) {
+                                currentCityPtr = currentCityPtr->NextSiblingElement("city");
+                            }
+                            if (currentCityPtr) flag = true;
+                            if (!flag)
+                                currentProvincePtr = currentProvincePtr->NextSiblingElement(
+                                        "province"); // si la ville n'est pas trouvé on passe à la province suivante
+                        }
+
+                        if (!flag) {    // si la ville n'est pas trouvé dans une balise <provinces> on la cherche dans le pays
+                            currentCityPtr = currentCountryPtr->FirstChildElement("city");
+                            while (currentCityPtr && currentCityPtr->Attribute("id") != cityId) {
+                                currentCityPtr = currentCityPtr->NextSiblingElement("city");
+                            }
+                            if (currentCityPtr) flag = true;
+                            if (!flag) currentCountryPtr = currentCountryPtr->NextSiblingElement(); // si la ville n'est pas trouvé on passe au pays suivant
+                        }
+                    }
+                    cout<< " se trouve à " << currentCityPtr->FirstChildElement("name")->GetText()<<endl;
+                }else cout << " se trouve dans une zone non habitée"<<endl;
+
+
+                int lattitude = stoi(airportPtr->FirstChildElement("latitude")->GetText());
+                int longitude = stoi(airportPtr->FirstChildElement("longitude")->GetText());
+                cout << "  - Les coordonnées de l'aéroport sont : ";
+                if (lattitude < 0) cout << abs(lattitude) << "°S";
+                else cout << lattitude << "°N";
+                if (longitude < 0) cout << ", "<< abs(longitude) << "°O";
+                else cout << ", "<< longitude << "°E";
+                    cout << " et il culmine à "<< airportPtr->FirstChildElement("elevation")->GetText() << " mètres d'altitude ";
+                cout << endl;
+                time_t rawtime;
+                struct tm * ptm;
+                time ( &rawtime );
+                ptm = gmtime ( &rawtime );
+                cout << "  - À ces coordonnée il est actuemment : "<< ptm->tm_hour+stoi(airportPtr->FirstChildElement("gmtOffset")->GetText()) <<"H et "<< ptm->tm_min << "min"<< endl;
+
+                if (airportPtr->FirstChildElement("located_on"))
+                    cout << "  - Il est situé sur l'île : "
+                    << getXmlelementFromIdAndCatRec(airportPtr->FirstChildElement("located_on")->Attribute("island"), "islandscategory")->FirstChildElement("name")->GetText()<< endl;
+                cout << endl;
+
+            }
+        }
+    }
+
+
+
+}
+
 
 /*
  * Méthodes de service fournies
