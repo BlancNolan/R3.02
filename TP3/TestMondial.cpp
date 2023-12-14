@@ -196,6 +196,16 @@ void testPrintCityInformation(Mondial& theMondial) {
     cout << endl;
 }
 
+void testPrintIslandsInformation(Mondial( &theMondial)){
+    cout << endl << "******************************" << endl;
+    cout << "*                            *" << endl;
+    cout << "* Informations sur les îles  *" << endl;
+    cout << "*                            *" << endl;
+    cout << "******************************" << endl << endl;
+
+    theMondial.printIslandsInformations();
+}
+
 int main() {
 
     /*
@@ -227,9 +237,10 @@ int main() {
     testPrintCountriesWithProvincesCrossedByRiver(theMondial);
     testPrintCountriesAndProvincesCrossedByRiver(theMondial);
     testPrintCityInformation(theMondial);
+    testPrintIslandsInformation(theMondial);
 
     //theMondial.printIslandsInformations();
-    
+
     return 0;
 }
 

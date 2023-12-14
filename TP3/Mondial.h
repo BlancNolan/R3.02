@@ -85,9 +85,9 @@ private:
 
     XMLElement* getRiverXmlelementFromNameIter(string riverName) const;
 
-    XMLElement* getSeaXmlelementFromIdRec(string idSea) const;
+    XMLElement* getXmlelementFromIdAndCatRec(string idSea, const char* categorie) const throw (PrecondVioleeExcep);
 
-    XMLElement* getSeaXmlelementFromIdRecWorker(XMLElement* currentIslandElement, string idSea) const;
+    XMLElement* getXmlelementFromIdAndCatRecWorker(XMLElement* currentElement, string &id, const char* categorie) const;
 
 
 
