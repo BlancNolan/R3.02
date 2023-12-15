@@ -247,9 +247,9 @@ int main() {
     //Mondial theMondial("/Users/hb/Documents/ Enseignement/R3.02/TP_Sols/R302-TP3-Correction-compile/mondial_HB.xml");
 
     // pour les étudiants à l'iut :
-    //Mondial theMondial("/users/info/pub/s3/R302/mondial_HB.xml");
+    Mondial theMondial("/users/info/pub/s3/R302/mondial_HB.xml");
     // à la maison :
-    Mondial theMondial("/Users/nolanblanc/Documents/IUT/S3/R3.02/TP3/mondial_HB.xml");
+    //Mondial theMondial("/Users/nolanblanc/Documents/IUT/S3/R3.02/TP3/mondial_HB.xml");
 
     // autre, mettre votre chemin d'accès au fichier XML
     // Mondial theMondial("/MON_CHEMIN_D_ACCES/mondial_HB.xml");
