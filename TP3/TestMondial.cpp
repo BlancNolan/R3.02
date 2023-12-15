@@ -1,4 +1,4 @@
-/* 
+/*
  * File:   newmain.cpp
  * Author: hb
  *
@@ -196,6 +196,46 @@ void testPrintCityInformation(Mondial& theMondial) {
     cout << endl;
 }
 
+void testPrintIslandsInformation(Mondial &theMondial){
+    cout << endl << "******************************" << endl;
+    cout << "*                            *" << endl;
+    cout << "* Informations sur les îles  *" << endl;
+    cout << "*                            *" << endl;
+    cout << "******************************" << endl << endl;
+
+    theMondial.printIslandsInformations();
+}
+
+void testPrintAirportFromOfCountry(Mondial &theMondial){
+    cout << endl << "***********************************" << endl;
+    cout << "*                                 *" << endl;
+    cout << "* Informations sur les aéroports  *" << endl;
+    cout << "*                                 *" << endl;
+    cout << "***********************************" << endl << endl;
+
+    theMondial.printAirportFromOfCountry("United States");
+    cout<< endl;
+    theMondial.printAirportFromOfCountry("Liechtenstein");
+    cout<< endl;
+    theMondial.printAirportFromOfCountry("Test");
+    cout<< endl;
+}
+
+void testPrintMountainClosestToCity(Mondial &theMondial){
+    cout << endl << "***********************************" << endl;
+    cout << "*                                 *" << endl;
+    cout << "* Informations sur les montagnes  *" << endl;
+    cout << "*                                 *" << endl;
+    cout << "***********************************" << endl << endl;
+
+    theMondial.printMountainClosestToCity("Vaduz");
+    cout<< endl;
+    theMondial.printMountainClosestToCity("Paris");
+    cout<< endl;
+    theMondial.printMountainClosestToCity("Test");
+    cout<< endl;
+}
+
 int main() {
 
     /*
@@ -206,8 +246,10 @@ int main() {
     // version HB
     //Mondial theMondial("/Users/hb/Documents/ Enseignement/R3.02/TP_Sols/R302-TP3-Correction-compile/mondial_HB.xml");
 
-    // pour les étudiants
-    Mondial theMondial("/users/info/pub/s3/R302/mondial_HB.xml");
+    // pour les étudiants à l'iut :
+    //Mondial theMondial("/users/info/pub/s3/R302/mondial_HB.xml");
+    // à la maison :
+    Mondial theMondial("/Users/nolanblanc/Documents/IUT/S3/R3.02/TP3/mondial_HB.xml");
 
     // autre, mettre votre chemin d'accès au fichier XML
     // Mondial theMondial("/MON_CHEMIN_D_ACCES/mondial_HB.xml");
@@ -225,9 +267,12 @@ int main() {
     testPrintCountriesWithProvincesCrossedByRiver(theMondial);
     testPrintCountriesAndProvincesCrossedByRiver(theMondial);
     testPrintCityInformation(theMondial);
+    testPrintIslandsInformation(theMondial);
+    testPrintAirportFromOfCountry(theMondial);
+    testPrintMountainClosestToCity(theMondial);
 
     //theMondial.printIslandsInformations();
-    
+
     return 0;
 }
 

@@ -27,6 +27,10 @@ void Mondial::Print() {
 /*
  * FOURNIE
  */
+/**
+ * Retourne le nombre d'aéroports présents dans le fichier XML
+ * @return valeur du nombre d'aéroports
+ */
 int Mondial::getNbAirports() const {
     // initialisation du nombre d’aéroports
     int nb = 0;
@@ -48,6 +52,9 @@ int Mondial::getNbAirports() const {
 
 /*
  * FOURNIE
+ */
+/**
+ * Affiche les codes des pays présents dans le fichier XML avec leur rang
  */
 void Mondial::printCountriesCode() const {
     int rank = 1; // rang du pays
@@ -73,8 +80,9 @@ void Mondial::printCountriesCode() const {
 }
 
 
-/*
- * A COMPLETER
+/**
+ * Retourne le nombre de déserts présents dans le fichier XML
+ * @return valeur du nombre de dessert
  */
 int Mondial::getNbDeserts() const {
 
@@ -97,8 +105,10 @@ int Mondial::getNbDeserts() const {
 
 }
 
-/*
- * A COMPLETER
+/**
+ * Retourne le nombre d'élément de la catégorie <categoryName> présents dans le fichier XML
+ * @param categoryName
+ * @return nombre d'élément de la catégorie <categoryName>
  */
 int Mondial::getNbElemCat(const string categoryName) {
 
@@ -123,16 +133,21 @@ int Mondial::getNbElemCat(const string categoryName) {
     return nbelement;
 }
 
-/*
- * A COMPLETER
+/**
+ * Retourne le pointeur sur l'élément <country> d'un pays identifié par son nom (countryName)
+ * @param countryName
+ * @return pointeur sur l'élément <country> dont la valeur du fils <name> est égal à countryName, nullprt sinon
  */
 XMLElement* Mondial::getCountryXmlelementFromNameRec(string countryName) const {
 
     return getCountryXmlelementFromNameRecWorker(racineMondial->FirstChildElement("countriescategory")->FirstChildElement(), countryName);
 }
 
-/*
- * A COMPLETER
+/**
+ * worker de la methode getCountryXmlelementFromNameRec
+ * @param currentCountryElement pointeur sur l'élément <country> actuel
+ * @param countryName valeur du fils <name> de l'élément recherché
+ * @return nullptr si l'élément n'est pas trouvé, sinon le pointeur sur l'élément recherché
  */
 XMLElement* Mondial::getCountryXmlelementFromNameRecWorker(XMLElement* currentCountryElement, string countryName) const {
 
@@ -141,8 +156,11 @@ XMLElement* Mondial::getCountryXmlelementFromNameRecWorker(XMLElement* currentCo
     else return getCountryXmlelementFromNameRecWorker(currentCountryElement->NextSiblingElement(), countryName);
 }
 
-/*
- * A COMPLETER
+/**
+ * Retourne le code du pays identifié par son nom (countryName)
+ * @throw PrecondVioleeExcep si le pays n'existe pas
+ * @param countryName
+ * @return code du pays, lève un execption de type PrecondVioleeExcep si le pays n'existe pas
  */
 string Mondial::getCountryCodeFromName(string countryName) const throw (PrecondVioleeExcep) {
 
@@ -154,11 +172,9 @@ string Mondial::getCountryCodeFromName(string countryName) const throw (PrecondV
     else return resultat->Attribute("car_code");
 }
 
-/*
- * A COMPLETER
- */
+
 /**
- * élément <country> d'un pays identifié par son nom countryName
+ * Retourne l'élément <country> d'un pays identifié par son nom (countryName)
  * @param countryName
  * @return pointeur sur l'élément <country> dont la valeur du fils <name> est égal à countryName, nullprt sinon
  */
@@ -191,9 +207,9 @@ int Mondial::getCountryPopulationFromName(string countryName) const {
 }
 
 /**
- *
+ * retourne le pointeur sur l'élément <country> d'un pays identifié par son code (countryCode) avec l'attribut "car_code"
  * @param countryCode
- * @return
+ * @return pointeur sur l'élément <country> dont la valeur de l'attribut "car_code" est égal à countryCode, nullprt sinon
  */
 XMLElement* Mondial::getCountryXmlelementFromCode(string countryCode) const {
 
@@ -204,23 +220,25 @@ XMLElement* Mondial::getCountryXmlelementFromCode(string countryCode) const {
     return currentCountryElementPtr;
 }
 
-/*
- * A COMPLETER
+/**
+ * Affiche les pays frontaliers du pays <countryName> avec la longueur de la frontière
+ * précise si le pays n'existe pas ou n'a pas de pays frontalier
+ * @param countryName
  */
 void Mondial::printCountryBorders(string countryName) const {
 
     //reccuperation du pointeur de l'élément pays ayant pour nom <countryName>
     XMLElement* countryPtr = getCountryXmlelementFromNameRec(countryName);
 
-    if(!countryPtr){
+    if(!countryPtr){ // le pays n'existe pas
         cout << "Le pays : " << countryName << ", n'existe pas !" << endl;
     }else{
-        if(!countryPtr->FirstChildElement("border")){
+        if(!countryPtr->FirstChildElement("border")){ // le pays n'a pas de pays frontalier car pas de balise <border>
             cout << "Le pays : "<<countryName <<", n'a pas de pays frontalier !" << endl;
         }else{
             cout << "Le pays : "<< countryName << endl;
             XMLElement* currentBorderPtr = countryPtr->FirstChildElement("border");
-            while(currentBorderPtr){
+            while(currentBorderPtr){ // parcours de toutes les balises <border> du pays currentCountryPtr
                 cout << "  est frontalier avec : "
                     << getCountryXmlelementFromCode(currentBorderPtr->Attribute("country"))->FirstChildElement("name")->GetText()
                     <<", la longueur de sa frontière avec celui-ci est : "<<currentBorderPtr->Attribute("length") << endl;
@@ -231,8 +249,10 @@ void Mondial::printCountryBorders(string countryName) const {
     }
 }
 
-/*
- * A COMPLETER
+/**
+ * reccupère le XMLElement <river> ayant son nom <name> valant "riverName"
+ * @param riverName
+ * @return XmlElement* du fichier xml si trouver sinon nullptr
  */
 XMLElement* Mondial::getRiverXmlelementFromNameIter(string riverName) const {
 
@@ -246,15 +266,17 @@ XMLElement* Mondial::getRiverXmlelementFromNameIter(string riverName) const {
     return currentRiverElementPtr;
 }
 
-/*
- * A COMPLETER
+/**
+ * Affiche les pays traversés par le fleuve (riverName)
+ * precise si le fleuve n'existe pas
+ * @param riverName
  */
 void Mondial::printAllCountriesCrossedByRiver(string riverName) const {
 
     // reccupération de l'élément river qui possède le nom riverName
     XMLElement *riverPtr = getRiverXmlelementFromNameIter(riverName);
 
-    if (!riverPtr)
+    if (!riverPtr) // le fleuve n'existe pas
         cout << "Le fleuve : "<<riverName<<", n'existe pas !" <<endl;
     else{
         cout << "Le fleuve : "<< riverName << "\n  traverse les pays suivants : ";
@@ -262,51 +284,175 @@ void Mondial::printAllCountriesCrossedByRiver(string riverName) const {
         //reccupération de la liste de codes de pays traversés par la rivière
         string s = riverPtr->Attribute("country");
         //séparation de la liste avec le charactère " "
-        vector<string> listeCountry = split(s, atoi(" "));
-
-        for(string st : listeCountry){
-            cout << getCountryXmlelementFromCode(st)->FirstChildElement("name")->GetText() << ", ";
+        vector<string> listeCountry = split(s, ' ');
+        //affichage de la liste des pays
+        for(string ss : listeCountry){
+            cout << getCountryXmlelementFromCode(ss)->FirstChildElement("name")->GetText() << ", ";
         }
         cout <<"il a la longueur suivante : "<<riverPtr->FirstChildElement("length")->GetText()<< endl;
     }
 
 }
 
-/*
- * A COMPLETER
+/**
+ * Affiche les informations sur les pays traversés par le fleuve (riverName)
+ * precise si le fleuve n'existe pas
+ * @param riverName
  */
 void Mondial::printCountriesWithProvincesCrossedByRiver(string riverName) const {
 
+    // reccupération de l'élément river qui possède le nom riverName
+    XMLElement *riverPtr = getRiverXmlelementFromNameIter(riverName);
+
+    if (!riverPtr) // le fleuve n'existe pas
+        cout << "Le fleuve : "<<riverName<<", n'existe pas !" <<endl;
+    else {
+        cout << "Le fleuve : " << riverName << "\n  traverse les pays suivants : ";
+        XMLElement *currentLocatedRiverPtr = riverPtr->FirstChildElement("located");
+        while(currentLocatedRiverPtr){ // parcours de toutes les balises <located> du fleuve currentRiverPtr
+            cout << getCountryXmlelementFromCode(currentLocatedRiverPtr->Attribute("country"))->FirstChildElement("name")->GetText() << ", ";
+            currentLocatedRiverPtr = currentLocatedRiverPtr->NextSiblingElement("located");
+        }
+        cout <<"il a la longueur suivante : "<<riverPtr->FirstChildElement("length")->GetText()<< endl;
+    }
 }
 
-/*
- * A COMPLETER
+/**
+ * Affiche les informations sur les pays et les provinces traversés par le fleuve (riverName)
+ * @param riverName
  */
 void Mondial::printCountriesAndProvincesCrossedByRiver(string riverName) const {
-    /*
-     * A COMPLETER
-     */
+    // reccupération de l'élément river qui possède le nom riverName
+    XMLElement *riverPtr = getRiverXmlelementFromNameIter(riverName);
+
+    if (!riverPtr) // le fleuve n'existe pas
+        cout << "Le fleuve : "<<riverName<<", n'existe pas !" <<endl;
+    else {
+        cout << "Le fleuve : " << riverName << " de longueur "<<riverPtr->FirstChildElement("length")->GetText()
+            <<" traverse les pays suivants :"<< endl;
+        //reccupérer la chaîne des pays traversé :
+        string s = riverPtr->Attribute("country");
+        //séparation des pays dans un vecteur :
+        vector<string> listePays = split(s, ' ');
+        //reccupération de l'élément <located>
+        XMLElement *currentLocatedElementPtr = riverPtr->FirstChildElement("located");
+        //liste des attribut country des élements <located>
+        vector<string> locateds;
+        while(currentLocatedElementPtr){
+            locateds.emplace_back(currentLocatedElementPtr->Attribute("country"));  // mise en fin de vecteur du car_code d'un pays de <located>
+            currentLocatedElementPtr = currentLocatedElementPtr->NextSiblingElement("located");
+        }
+        for(string ss : listePays){ // pour chaque pays présent dans l'attribut "country" de <river>
+            XMLElement *currentCountryPtr = getCountryXmlelementFromCode(ss);
+
+            if (count(locateds.begin(), locateds.end(), ss)){   // verification que le pays est dans une balise <located> et à donc des provinces
+                cout << "  - " << currentCountryPtr->FirstChildElement("name")->GetText()
+                    <<", où il traverse les divisions administratives suivantes : "<<endl;
+
+                //reccupération du bon element <located>
+                currentLocatedElementPtr = riverPtr->FirstChildElement("located");
+                while(currentLocatedElementPtr->Attribute("country") != ss){
+                    currentLocatedElementPtr = currentLocatedElementPtr->NextSiblingElement("located"); // identification de l'élément <located> du car_code actuel
+                }
+                //reccupérer la chaîne des provinces traversées :
+                string provinces = currentLocatedElementPtr->Attribute("province");
+                //séparation des provinces dans un vecteur :
+                vector<string> listeProvince = split(provinces, ' ');
+                //reccupération de la premiere province de currentCountryPtr
+                XMLElement *currentProvincePtr = currentCountryPtr->FirstChildElement("province");
+                while(currentProvincePtr){
+                    if (count(listeProvince.begin(), listeProvince.end(), currentProvincePtr->Attribute("id")))
+                        cout << "\t * "<<currentProvincePtr->FirstChildElement("name")->GetText() <<endl;       // affiche du nom de la province si elle est dans l'attribut "province de l'élément <located> actuel
+                    currentProvincePtr = currentProvincePtr->NextSiblingElement("province");
+                }
+            }else{
+                cout << "  - " << currentCountryPtr->FirstChildElement("name")->GetText() << endl;
+            }
+        }
+    }
 }
 
-/*
- * A COMPLETER
+/**
+ * Affiche les informations sur la ville <cityName> (nom, pays, province, latitude, longitude, altitude, dernière population connue)
+ * @param cityName
  */
 void Mondial::printCityInformation(string cityName) const {
-    /*
-     * A COMPLETER
-     */
+
+    //recherche de l'élémnet de <city> possèdant le fils <name> valant cityName
+    XMLElement *currentCountryPtr = racineMondial->FirstChildElement("countriescategory")->FirstChildElement();
+    XMLElement *currentProvincePtr = nullptr;
+    XMLElement *currentCityPtr = nullptr;
+    bool flag = false; // booléen de sortie de boucle si la ville est trouvé
+    while(currentCountryPtr && !flag){
+        currentProvincePtr = currentCountryPtr->FirstChildElement("province");
+
+        while(currentProvincePtr && !flag){
+            currentCityPtr = currentProvincePtr->FirstChildElement("city");
+            while(currentCityPtr && currentCityPtr->FirstChildElement("name")->GetText() != cityName){
+                currentCityPtr = currentCityPtr->NextSiblingElement("city");
+            }
+            if (currentCityPtr) flag = true;
+            if (!flag) currentProvincePtr = currentProvincePtr->NextSiblingElement("province"); // si la ville n'est pas trouvé on passe à la province suivante
+        }
+
+        if (!flag) {    // si la ville n'est pas trouvé dans une balise <provinces> on la cherche dans le pays
+            currentCityPtr = currentCountryPtr->FirstChildElement("city");
+            while (currentCityPtr && currentCityPtr->FirstChildElement("name")->GetText() != cityName) {
+                currentCityPtr = currentCityPtr->NextSiblingElement("city");
+            }
+            if (currentCityPtr) flag = true;
+            if (!flag) currentCountryPtr = currentCountryPtr->NextSiblingElement(); // si la ville n'est pas trouvé on passe au pays suivant
+        }
+    }
+
+    if (!currentCityPtr){ // la ville n'existe pas
+        cout << "La ville "<<cityName<<", n'existe pas !" << endl;
+    }else{
+        cout << "La ville "<<cityName
+            << "\n - se trouve dans le pays : "<<currentCountryPtr->FirstChildElement("name")->GetText()<<endl;
+        if (currentProvincePtr){ // si la ville est dans une balise <province>
+            cout << " - dans la division adminstrative : "<<currentProvincePtr->FirstChildElement("name")->GetText()<< endl;
+        }
+        cout <<" - sa latitude est : "<<currentCityPtr->FirstChildElement("latitude")->GetText()
+        <<"\n - sa longitude est : "<<currentCityPtr->FirstChildElement("longitude")->GetText()
+        <<"\n - son altitude est : "<<currentCityPtr->FirstChildElement("elevation")->GetText()
+        <<"\n - sa population est : "<<currentCityPtr->LastChildElement("population")->GetText()<<endl;
+    }
 }
 
-XMLElement *Mondial::getSeaXmlelementFromIdRec(string idSea) const {
-    return getSeaXmlelementFromIdRecWorker(racineMondial->FirstChildElement("seascategory")->FirstChildElement(), idSea);
+/*---------------------------------  METHODES DE L'EXERCICE 9   ---------------------------------*/
+
+/**
+ * reccupère le XMLElement fils de <categorie> ayant son identifiant valant "id"
+ * @throw PrecondVioleeExcep si la catégorie n'existe pas
+ * @param id
+ * @param categorie
+ * @return XmlElement* du fichier xml si trouver sinon nullptr
+ */
+XMLElement *Mondial::getXmlelementFromIdAndCatRec(string id, const char* categorie) const throw (PrecondVioleeExcep){
+    const char *attribut;
+    if (categorie == "countriescategory") attribut = "car_code";
+    else if (categorie == "airportscategory") attribut = "iatacode";
+    else attribut = "id"; // pour les autres catégories
+
+    XMLElement* currentElement = racineMondial->FirstChildElement(categorie);
+    if (!currentElement) throw PrecondVioleeExcep((string)categorie+" n'existe pas !"); // la catégorie n'existe pas on lève une exception
+    else return getXmlelementFromIdAndCatRecWorker(currentElement->FirstChildElement(), id, attribut);
 }
 
+/**
+ * worker de la methode getXmlelementFromIdAndCatRec
+ * @param currentElement pointeur sur l'élément actuel
+ * @param id valeur de l'attribut de l'élément recherché
+ * @param attribut nom de l'attribut de l'élément recherché
+ * @return nullptr si l'élément n'est pas trouvé, sinon le pointeur sur l'élément recherché
+ */
 XMLElement *
-Mondial::getSeaXmlelementFromIdRecWorker(XMLElement *currentIslandElement, string idSea) const {
+Mondial::getXmlelementFromIdAndCatRecWorker(XMLElement *currentElement, string &id, const char* attribut) const {
 
-    if (!currentIslandElement) return nullptr;
-    else if(currentIslandElement->Attribute("id") == idSea) return currentIslandElement;
-    else return getSeaXmlelementFromIdRecWorker(currentIslandElement->NextSiblingElement(), idSea);
+    if (!currentElement) return nullptr;
+    else if (currentElement->Attribute(attribut) == id) return currentElement;
+    else return getXmlelementFromIdAndCatRecWorker(currentElement->NextSiblingElement(), id, attribut);
 }
 
 /**
@@ -322,31 +468,304 @@ void Mondial::printIslandsInformations() const {
     //boucle d'affichage des informations pour toutes les îles
     while(currentIslandPtr){
         //introduction sur l'île
-        cout << "L'île " << currentIslandPtr->FirstChildElement("name")->GetText() << " fait "
-        << currentIslandPtr->FirstChildElement("area") << " km carrés et appartient à :" << endl;
+        cout << "L'île " << currentIslandPtr->FirstChildElement("name")->GetText();
+        //affichage de la surface si elle est presente
+        if (currentIslandPtr->FirstChildElement("area"))cout<< " fait "<< currentIslandPtr->FirstChildElement("area")->GetText() << " km carrés et ";
+        cout << "appartient à :" << endl;
 
-        //mise dans un vecteur et affichage de l'ensemble des pays qui possèdent l'île
+         /************************* Affichage du(des) pays ***************************/
+
+        //mise dans un vecteur et affichage de l'ensemble des pays qui possèdent l'île avec leur province si nécessaire
         string countries = currentIslandPtr->Attribute("country");
-        vector<string> listeCountry = split(countries,' ');
-        for(string code : listeCountry){
+        vector<string> listeCountry = split(countries,' ');     // séparation des mot de l'attribut country
+        XMLElement *currentLocatedElementPtr = currentIslandPtr->FirstChildElement("located");
+        //liste des attribut country des élements <located>
+        vector<string> locateds;
+        while(currentLocatedElementPtr){
+            locateds.emplace_back(currentLocatedElementPtr->Attribute("country"));  // mise en fin de vecteur du car_code d'un pays de <located>
+            currentLocatedElementPtr = currentLocatedElementPtr->NextSiblingElement("located");
+        }
+        for(string code : listeCountry){ // pour chaque pays présent dans l'attribut "country" de <island>
             XMLElement* currentCountriePtr = getCountryXmlelementFromCode(code);
-            cout << "\t* "<< currentCountriePtr->FirstChildElement("name")->GetText() <<endl;
+            if (count(locateds.begin(), locateds.end(), code)){  // verification que le pays est dans une balise <located> et à donc des provinces
+                cout << "\t - " << currentCountriePtr->FirstChildElement("name")->GetText()
+                     <<" dans la division administrative de : "<<endl;
+                //reccupération du bon element <located>
+                currentLocatedElementPtr = currentIslandPtr->FirstChildElement("located");
+                while(currentLocatedElementPtr->Attribute("country") != code){
+                    currentLocatedElementPtr = currentLocatedElementPtr->NextSiblingElement("located");  // identification de l'élément <located> du car_code actuel
+                }
+                //reccupérer la chaîne des provinces traversées :
+                string provinces = currentLocatedElementPtr->Attribute("province");
+                //séparation des provinces dans un vecteur :
+                vector<string> listeProvince = split(provinces, ' ');
+                //reccupération de la premiere province de currentCountryPtr
+                XMLElement *currentProvincePtr = currentCountriePtr->FirstChildElement("province");
+                while(currentProvincePtr){
+                    if (count(listeProvince.begin(), listeProvince.end(), currentProvincePtr->Attribute("id")))
+                        cout << "\t\t* "<<currentProvincePtr->FirstChildElement("name")->GetText() <<endl;       // affiche du nom de la province si elle est dans l'attribut "province de l'élément <located> actuel
+                    currentProvincePtr = currentProvincePtr->NextSiblingElement("province");
+                }
+            }else {
+                cout << "\t* " << currentCountriePtr->FirstChildElement("name")->GetText() << endl;
+            }
         }
 
-        cout << "- l'île est entourée par :" << endl;
-        //mise dans un vecteur et affichage des mer et océan entourant l'île
-        string seas = currentIslandPtr->Attribute("sea");
-        vector<string> listeSea = split(seas, ' ');
-        for(string idSea : listeSea){
-            XMLElement* currentSeaPtr = getSeaXmlelementFromIdRec(idSea);
-            cout << "\t* "<< currentSeaPtr->FirstChildElement("name")->GetText() <<endl;
+        /************************* Affichage du(des) mer(s) ***************************/
+
+        //mise dans un vecteur et affichage des mer et océan entourant l'île si l'attribut sea est présent
+        if (currentIslandPtr->Attribute("sea")) {
+            cout << "  - l'île est entourée par :" << endl;
+            string seas = currentIslandPtr->Attribute("sea");   // ensemble des mers qui entoure l'île
+            vector<string> listeSea = split(seas, ' ');
+            for (string idSea: listeSea) {
+                XMLElement *currentSeaPtr = getXmlelementFromIdAndCatRec(idSea, "seascategory"); // reccupération de l'élément <sea> ayant l'id "idseas"
+                cout << "\t* " << currentSeaPtr->FirstChildElement("name")->GetText() << endl;  //affichage du nom de <sea>
+            }
         }
 
-        //
+        /************************* Affichage des rivières  ***************************/
+        if(currentIslandPtr->Attribute("river")){
+            cout << "  - Elle est entourée par la ou les rivière(s) : "<<endl;
+            string rivers = currentIslandPtr->Attribute("river"); // reccupération de(s) rivière
+            vector<string> listeRivers = split(rivers, ' '); //sépartion des rivières dans un vecteur
+            XMLElement* currentRiver;
+            for(string river : listeRivers){ //pour chaque rivière de listeRiver
+                try{
+                    currentRiver = getXmlelementFromIdAndCatRec(river, "riverscategory");
+                    cout << "\t * " << currentRiver->FirstChildElement("name")->GetText();
+                }catch (PrecondVioleeExcep &e){
+                    cout << e.what() << endl;
+                }
+
+            }
+        }
+
+        /************************* Affichage du lac  ***************************/
+        if(currentIslandPtr->Attribute("lake")) {
+            cout << "  - Elle est entourée par le lac: " << endl;
+            string lake = currentIslandPtr->Attribute("lake"); // reccupération de l'identifiant du lake
+            try {
+                XMLElement *currentLake = getXmlelementFromIdAndCatRec(lake, "lakescategory");
+                cout << "\t * " << currentLake->FirstChildElement("name")->GetText();   // affichage du nom du lac
+            } catch (PrecondVioleeExcep &e) {
+                cout << e.what() << endl;
+            }
 
 
+        }
+
+        /************************* Affichage du type ***************************/
+
+        // affichage du type de l'île s'il existe
+        if (currentIslandPtr->Attribute("type")) cout << "  - C'est une île de type "<< currentIslandPtr->Attribute("type") << endl;
+
+        /************************* Affichage de l'archipel ***************************/
+
+        // affichage de l'achipel s'il existe
+        if (currentIslandPtr->FirstChildElement("islands")) cout << "  - Elle fait partie de l'archipel de(s) " <<currentIslandPtr->FirstChildElement("islands")->GetText()<< endl;
+
+        /************************* Affichage de la longitude / l'atitude / altitude ***************************/
+
+        int lattitude = stoi(currentIslandPtr->FirstChildElement("latitude")->GetText());
+        int longitude = stoi(currentIslandPtr->FirstChildElement("longitude")->GetText());
+
+
+        cout << "  - Les coordonnées de l'île sont : ";
+        if (lattitude < 0) cout << abs(lattitude) << "°S";
+        else cout << lattitude << "°N";
+        if (longitude < 0) cout << ", "<< abs(longitude) << "°O";
+        else cout << ", "<< longitude << "°E";
+        if(currentIslandPtr->FirstChildElement("elevation"))
+            cout << " et elle culmine à "<< currentIslandPtr->FirstChildElement("elevation")->GetText() << " mètres d'altitude ";
+        cout << endl << endl;
+
+        currentIslandPtr = currentIslandPtr->NextSiblingElement();
     }
 }
+
+/**
+ * Affiche les informations sur les aéroports du pays <countryName> (nom, ville, latitude, longitude, altitude, fuseau horaire)
+ */
+void Mondial::printAirportFromOfCountry(string countryName) const {
+    // recuperation du code du pays
+    string code = "";
+    try{
+        code = getCountryCodeFromName(countryName);
+    }catch (PrecondVioleeExcep &e){
+        cout << e.what() << endl;
+    }
+
+    if(!code.empty()){
+        // création d'un vecteur contenant les elements <airport> du pays
+        vector<XMLElement *> listeAirPort;
+
+        // récuperation du premier <airport>
+        XMLElement *currentAirport = racineMondial->FirstChildElement("airportscategory")->FirstChildElement();
+        //parcour des airport
+        while (currentAirport) {
+            // si le code du pays correspond à celui de l'airport
+            if (currentAirport->Attribute("country") == code) {
+                // on l'ajoute au vecteur
+                listeAirPort.push_back(currentAirport);
+            }
+            // on passe à l'airport suivant
+            currentAirport = currentAirport->NextSiblingElement();
+        }
+
+        if (listeAirPort.empty()){
+            cout << "Le pays : "<<countryName <<", n'a pas d'aéroport !" << endl;
+        }else{
+            cout << "Les aéroport de "<<countryName << " :"<<endl;
+
+            for (XMLElement* airportPtr : listeAirPort){
+                cout << "L'aéroport : "<< airportPtr->FirstChildElement("name")->GetText();
+                if (airportPtr->Attribute("city")) {
+                    //recherche de l'élémnet de <city> possèdant l'attribut id valant airport->Attribute("city")
+                    XMLElement *currentCountryPtr = racineMondial->FirstChildElement(
+                            "countriescategory")->FirstChildElement();
+                    XMLElement *currentProvincePtr = nullptr;
+                    XMLElement *currentCityPtr = nullptr;
+                    string cityId = airportPtr->Attribute("city");
+                    bool flag = false; // booléen de sortie de boucle si la ville est trouvé
+                    while (currentCountryPtr && !flag) {
+                        currentProvincePtr = currentCountryPtr->FirstChildElement("province");
+
+                        while (currentProvincePtr && !flag) {
+                            currentCityPtr = currentProvincePtr->FirstChildElement("city");
+                            while (currentCityPtr && currentCityPtr->Attribute("id") != cityId) {
+                                currentCityPtr = currentCityPtr->NextSiblingElement("city");
+                            }
+                            if (currentCityPtr) flag = true;
+                            if (!flag)
+                                currentProvincePtr = currentProvincePtr->NextSiblingElement(
+                                        "province"); // si la ville n'est pas trouvé on passe à la province suivante
+                        }
+
+                        if (!flag) {    // si la ville n'est pas trouvé dans une balise <provinces> on la cherche dans le pays
+                            currentCityPtr = currentCountryPtr->FirstChildElement("city");
+                            while (currentCityPtr && currentCityPtr->Attribute("id") != cityId) {
+                                currentCityPtr = currentCityPtr->NextSiblingElement("city");
+                            }
+                            if (currentCityPtr) flag = true;
+                            if (!flag) currentCountryPtr = currentCountryPtr->NextSiblingElement(); // si la ville n'est pas trouvé on passe au pays suivant
+                        }
+                    }
+                    cout<< " se trouve à " << currentCityPtr->FirstChildElement("name")->GetText()<<endl;
+                }else cout << " se trouve dans une zone non habitée"<<endl;
+
+
+                int lattitude = stoi(airportPtr->FirstChildElement("latitude")->GetText());
+                int longitude = stoi(airportPtr->FirstChildElement("longitude")->GetText());
+                cout << "  - Les coordonnées de l'aéroport sont : ";
+                if (lattitude < 0) cout << abs(lattitude) << "°S";
+                else cout << lattitude << "°N";
+                if (longitude < 0) cout << ", "<< abs(longitude) << "°O";
+                else cout << ", "<< longitude << "°E";
+                    cout << " et il culmine à "<< airportPtr->FirstChildElement("elevation")->GetText() << " mètres d'altitude ";
+                cout << endl;
+                time_t rawtime;
+                struct tm * ptm;
+                time ( &rawtime );
+                ptm = gmtime ( &rawtime );
+                cout << "  - À ces coordonnée il est actuemment : "<< ptm->tm_hour+stoi(airportPtr->FirstChildElement("gmtOffset")->GetText()) <<"H et "<< ptm->tm_min << "min"<< endl;
+
+                if (airportPtr->FirstChildElement("located_on"))
+                    cout << "  - Il est situé sur l'île : "
+                    << getXmlelementFromIdAndCatRec(airportPtr->FirstChildElement("located_on")->Attribute("island"), "islandscategory")->FirstChildElement("name")->GetText()<< endl;
+                cout << endl;
+
+            }
+        }
+    }
+}
+
+
+/**
+ * Affiche les informations sur la montagne la plus proche de la ville (cityName) ()
+ */
+void Mondial::printMountainClosestToCity(string cityName) const {
+
+    //TODO : il faudrai faire une fonction qui reccupère le XMLElement <city>
+    // de cityName pour factoriser le code entre printMountainClosestToCity printAirportFromOfCountry et printCityInformation
+    //recherche de l'élémnet de <city> possèdant le fils <name> valant cityName
+    XMLElement *currentCountryPtr = racineMondial->FirstChildElement("countriescategory")->FirstChildElement();
+    XMLElement *currentProvincePtr = nullptr;
+    XMLElement *currentCityPtr = nullptr;
+    bool flag = false; // booléen de sortie de boucle si la ville est trouvé
+    while(currentCountryPtr && !flag){
+        currentProvincePtr = currentCountryPtr->FirstChildElement("province");
+
+        while(currentProvincePtr && !flag){
+            currentCityPtr = currentProvincePtr->FirstChildElement("city");
+            while(currentCityPtr && currentCityPtr->FirstChildElement("name")->GetText() != cityName){
+                currentCityPtr = currentCityPtr->NextSiblingElement("city");
+            }
+            if (currentCityPtr) flag = true;
+            if (!flag) currentProvincePtr = currentProvincePtr->NextSiblingElement("province"); // si la ville n'est pas trouvé on passe à la province suivante
+        }
+
+        if (!flag) {    // si la ville n'est pas trouvé dans une balise <provinces> on la cherche dans le pays
+            currentCityPtr = currentCountryPtr->FirstChildElement("city");
+            while (currentCityPtr && currentCityPtr->FirstChildElement("name")->GetText() != cityName) {
+                currentCityPtr = currentCityPtr->NextSiblingElement("city");
+            }
+            if (currentCityPtr) flag = true;
+            if (!flag) currentCountryPtr = currentCountryPtr->NextSiblingElement(); // si la ville n'est pas trouvé on passe au pays suivant
+        }
+    }
+    if (!currentCityPtr){ // la ville n'existe pas
+        cout << "La ville "<<cityName<<", n'existe pas !" << endl;
+    }else {
+        XMLElement *closestMountainPtr = racineMondial->FirstChildElement("mountainscategory")->FirstChildElement();
+        XMLElement *currentMountainPtr = closestMountainPtr->NextSiblingElement();
+        // calucle d'une distance entre 2 points a et b =  racine((a.x - b.x)² + (a.y - b.y)²)
+        double distance = sqrt(pow(stoi(currentCityPtr->FirstChildElement("latitude")->GetText()) - stoi(closestMountainPtr->FirstChildElement("latitude")->GetText()), 2)
+                            + pow(stoi(currentCityPtr->FirstChildElement("longitude")->GetText()) - stoi(closestMountainPtr->FirstChildElement("longitude")->GetText()), 2));
+        double distance2;
+        while(currentMountainPtr){
+            distance2 = sqrt(pow(stoi(currentCityPtr->FirstChildElement("latitude")->GetText())-stoi(currentMountainPtr->FirstChildElement("latitude")->GetText()),2)
+                    + pow(stoi(currentCityPtr->FirstChildElement("longitude")->GetText())-stoi(currentMountainPtr->FirstChildElement("longitude")->GetText()),2));
+            if (distance2 < distance){
+                distance = distance2;
+                closestMountainPtr = currentMountainPtr;
+            }
+            currentMountainPtr = currentMountainPtr->NextSiblingElement();
+        }
+
+        // TODO : transformer la distance d'arc en distance en km
+        cout << "La montagne la plus proche de " << cityName << " est " << closestMountainPtr->FirstChildElement("name")->GetText() << ", à une distance de "<<distance <<" kilomètre."<<endl;
+        cout << "  - Elle se situe dans le(s) pays :"<<endl;
+        string pays = closestMountainPtr->Attribute("country");
+        vector<string> listePays = split(pays, ' ');
+        for(string paysCode : listePays){
+            cout << "\t* "<< getCountryXmlelementFromCode(pays)->FirstChildElement("name")->GetText();
+        }
+
+        cout << "  - Elle se situe dans la chaîne de : " << closestMountainPtr->FirstChildElement("mountains");
+        int lattitude = stoi(closestMountainPtr->FirstChildElement("latitude")->GetText());
+        int longitude = stoi(closestMountainPtr->FirstChildElement("longitude")->GetText());
+        cout << "  - Les coordonnées de l'aéroport sont : ";
+        if (lattitude < 0) cout << abs(lattitude) << "°S";
+        else cout << lattitude << "°N";
+        if (longitude < 0) cout << ", "<< abs(longitude) << "°O";
+        else cout << ", "<< longitude << "°E";
+        cout << " et il culmine à "<< closestMountainPtr->FirstChildElement("elevation")->GetText() << " mètres d'altitude "<<endl;
+
+        if (closestMountainPtr->Attribute("type")){
+            cout << "  - C'est une montagne de type "<< closestMountainPtr->Attribute("type") << endl;
+        }
+        if(closestMountainPtr->Attribute("last_eruption")){
+            string date = closestMountainPtr->Attribute("last_eruption");
+            cout << "  - Elle a eu sa dernière éruption en "<< date << endl;
+        }
+        if (closestMountainPtr->Attribute("island"))
+            cout << "  - Elle est situé sur l'île : "
+                 << getXmlelementFromIdAndCatRec(closestMountainPtr->Attribute("island"), "islandscategory")->FirstChildElement("name")->GetText()<< endl;
+    }
+
+}
+
 
 /*
  * Méthodes de service fournies
