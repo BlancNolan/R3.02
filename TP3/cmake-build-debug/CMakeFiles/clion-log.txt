@@ -1,0 +1,4 @@
+/usr/local/clion-2022.2.1/bin/cmake/linux/bin/cmake -DCMAKE_BUILD_TYPE=Debug -DCMAKE_MAKE_PROGRAM=/usr/local/clion-2022.2.1/bin/ninja/linux/ninja -G Ninja -S /users/info/etu-2a/blancn/R3.02/TP3 -B /users/info/etu-2a/blancn/R3.02/TP3/cmake-build-debug
+-- Configuring done
+-- Generating done
+-- Build files have been written to: /users/info/etu-2a/blancn/R3.02/TP3/cmake-build-debug
