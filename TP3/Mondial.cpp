@@ -678,8 +678,91 @@ void Mondial::printAirportFromOfCountry(string countryName) const {
             }
         }
     }
+}
 
 
+/**
+ * Affiche les informations sur la montagne la plus proche de la ville (cityName) ()
+ */
+void Mondial::printMountainClosestToCity(string cityName) const {
+
+    //TODO : il faudrai faire une fonction qui reccupère le XMLElement <city>
+    // de cityName pour factoriser le code entre printMountainClosestToCity printAirportFromOfCountry et printCityInformation
+    //recherche de l'élémnet de <city> possèdant le fils <name> valant cityName
+    XMLElement *currentCountryPtr = racineMondial->FirstChildElement("countriescategory")->FirstChildElement();
+    XMLElement *currentProvincePtr = nullptr;
+    XMLElement *currentCityPtr = nullptr;
+    bool flag = false; // booléen de sortie de boucle si la ville est trouvé
+    while(currentCountryPtr && !flag){
+        currentProvincePtr = currentCountryPtr->FirstChildElement("province");
+
+        while(currentProvincePtr && !flag){
+            currentCityPtr = currentProvincePtr->FirstChildElement("city");
+            while(currentCityPtr && currentCityPtr->FirstChildElement("name")->GetText() != cityName){
+                currentCityPtr = currentCityPtr->NextSiblingElement("city");
+            }
+            if (currentCityPtr) flag = true;
+            if (!flag) currentProvincePtr = currentProvincePtr->NextSiblingElement("province"); // si la ville n'est pas trouvé on passe à la province suivante
+        }
+
+        if (!flag) {    // si la ville n'est pas trouvé dans une balise <provinces> on la cherche dans le pays
+            currentCityPtr = currentCountryPtr->FirstChildElement("city");
+            while (currentCityPtr && currentCityPtr->FirstChildElement("name")->GetText() != cityName) {
+                currentCityPtr = currentCityPtr->NextSiblingElement("city");
+            }
+            if (currentCityPtr) flag = true;
+            if (!flag) currentCountryPtr = currentCountryPtr->NextSiblingElement(); // si la ville n'est pas trouvé on passe au pays suivant
+        }
+    }
+    if (!currentCityPtr){ // la ville n'existe pas
+        cout << "La ville "<<cityName<<", n'existe pas !" << endl;
+    }else {
+        XMLElement *closestMountainPtr = racineMondial->FirstChildElement("mountainscategory")->FirstChildElement();
+        XMLElement *currentMountainPtr = closestMountainPtr->NextSiblingElement();
+        // calucle d'une distance entre 2 points a et b =  racine((a.x - b.x)² + (a.y - b.y)²)
+        double distance = sqrt(pow(stoi(currentCityPtr->FirstChildElement("latitude")->GetText()) - stoi(closestMountainPtr->FirstChildElement("latitude")->GetText()), 2)
+                            + pow(stoi(currentCityPtr->FirstChildElement("longitude")->GetText()) - stoi(closestMountainPtr->FirstChildElement("longitude")->GetText()), 2));
+        double distance2;
+        while(currentMountainPtr){
+            distance2 = sqrt(pow(stoi(currentCityPtr->FirstChildElement("latitude")->GetText())-stoi(currentMountainPtr->FirstChildElement("latitude")->GetText()),2)
+                    + pow(stoi(currentCityPtr->FirstChildElement("longitude")->GetText())-stoi(currentMountainPtr->FirstChildElement("longitude")->GetText()),2));
+            if (distance2 < distance){
+                distance = distance2;
+                closestMountainPtr = currentMountainPtr;
+            }
+            currentMountainPtr = currentMountainPtr->NextSiblingElement();
+        }
+
+        // TODO : transformer la distance d'arc en distance en km
+        cout << "La montagne la plus proche de " << cityName << " est " << closestMountainPtr->FirstChildElement("name")->GetText() << ", à une distance de "<<distance <<" kilomètre."<<endl;
+        cout << "  - Elle se situe dans le(s) pays :"<<endl;
+        string pays = closestMountainPtr->Attribute("country");
+        vector<string> listePays = split(pays, ' ');
+        for(string paysCode : listePays){
+            cout << "\t* "<< getCountryXmlelementFromCode(pays)->FirstChildElement("name")->GetText();
+        }
+
+        cout << "  - Elle se situe dans la chaîne de : " << closestMountainPtr->FirstChildElement("mountains");
+        int lattitude = stoi(closestMountainPtr->FirstChildElement("latitude")->GetText());
+        int longitude = stoi(closestMountainPtr->FirstChildElement("longitude")->GetText());
+        cout << "  - Les coordonnées de l'aéroport sont : ";
+        if (lattitude < 0) cout << abs(lattitude) << "°S";
+        else cout << lattitude << "°N";
+        if (longitude < 0) cout << ", "<< abs(longitude) << "°O";
+        else cout << ", "<< longitude << "°E";
+        cout << " et il culmine à "<< closestMountainPtr->FirstChildElement("elevation")->GetText() << " mètres d'altitude "<<endl;
+
+        if (closestMountainPtr->Attribute("type")){
+            cout << "  - C'est une montagne de type "<< closestMountainPtr->Attribute("type") << endl;
+        }
+        if(closestMountainPtr->Attribute("last_eruption")){
+            string date = closestMountainPtr->Attribute("last_eruption");
+            cout << "  - Elle a eu sa dernière éruption en "<< date << endl;
+        }
+        if (closestMountainPtr->Attribute("island"))
+            cout << "  - Elle est situé sur l'île : "
+                 << getXmlelementFromIdAndCatRec(closestMountainPtr->Attribute("island"), "islandscategory")->FirstChildElement("name")->GetText()<< endl;
+    }
 
 }
 

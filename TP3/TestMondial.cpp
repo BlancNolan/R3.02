@@ -221,6 +221,21 @@ void testPrintAirportFromOfCountry(Mondial &theMondial){
     cout<< endl;
 }
 
+void testPrintMountainClosestToCity(Mondial &theMondial){
+    cout << endl << "***********************************" << endl;
+    cout << "*                                 *" << endl;
+    cout << "* Informations sur les montagnes  *" << endl;
+    cout << "*                                 *" << endl;
+    cout << "***********************************" << endl << endl;
+
+    theMondial.printMountainClosestToCity("Vaduz");
+    cout<< endl;
+    theMondial.printMountainClosestToCity("Paris");
+    cout<< endl;
+    theMondial.printMountainClosestToCity("Test");
+    cout<< endl;
+}
+
 int main() {
 
     /*
@@ -254,6 +269,7 @@ int main() {
     testPrintCityInformation(theMondial);
     testPrintIslandsInformation(theMondial);
     testPrintAirportFromOfCountry(theMondial);
+    testPrintMountainClosestToCity(theMondial);
 
     //theMondial.printIslandsInformations();
 
