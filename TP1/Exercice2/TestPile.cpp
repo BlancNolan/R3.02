@@ -155,8 +155,8 @@ void testEmpileSansFin() {
 }
 
 int main() {
-    //testEmpile();
-    //testDepile();
+    testEmpile();
+    testDepile();
     //testBorneDepile();
     // à utiliser une fois !!
     //testEmpileSansFin();

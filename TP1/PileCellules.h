@@ -109,16 +109,26 @@ bool PileCellules<TypeInfo>::estVide() const {
 
 template<class TypeInfo>
 void PileCellules<TypeInfo>::empile(const TypeInfo& nouvelleInfo) throw (bad_alloc) {
-    /*
-     * A COMPLETER
-     */
+
+    // creation nouvelle cellule
+    try {
+        Cellule<TypeInfo> *newSommet = new Cellule<TypeInfo>(nouvelleInfo);
+        newSommet->setSuivante(ptrSommet);
+        ptrSommet = newSommet;
+    }catch (bad_alloc &e){
+        throw bad_alloc();
+    }
 }
 
 template<class TypeInfo>
 void PileCellules<TypeInfo>::depile() throw (PrecondVioleeExcep) {
-    /*
-     * A COMPLETER
-     */
+    if(!estVide()){
+        Cellule<TypeInfo> *cellASuppr = ptrSommet;
+        ptrSommet = ptrSommet->getRefSuivante();
+        delete cellASuppr;
+    }else{
+        throw (PrecondVioleeExcep("méthode depile() appelée sur une pile videRec !"));
+    }
 }
 
 template<class TypeInfo>

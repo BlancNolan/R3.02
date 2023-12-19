@@ -494,9 +494,16 @@ void ListeChainee<TypeInfo>::afficheGDIter() const {
 template<class TypeInfo>
 void ListeChainee<TypeInfo>::afficheDGIter() const {
     cout << "En parcours itératif de droite à gauche, la liste contient -> ";
-    /*
-     * A COMPLETER
-     */
+   Cellule<TypeInfo> *currentCellPtr = ptrTete;
+   PileCellules<TypeInfo> *pileAffichage = new PileCellules<TypeInfo>();
+   while(currentCellPtr){
+       pileAffichage->empile(currentCellPtr->getInfo());
+       currentCellPtr = currentCellPtr->getSuivante();
+   }
+   while(!pileAffichage->estVide()){
+       cout << pileAffichage->consulteSommet() << " ";
+       pileAffichage->depile();
+   }
     cout << endl;
 }
 
