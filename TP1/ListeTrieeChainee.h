@@ -138,9 +138,24 @@ void ListeTrieeChainee<TypeInfo>::insereRec(const TypeInfo& nouvelleInfo) {
  */
 template<class TypeInfo>
 void ListeTrieeChainee<TypeInfo>::supprimeToutesDuplications() {
-    /*
-     * A COMPLETER
-     */
+    if (ptrTete){
+        Cellule<TypeInfo> *ptrCurrentCell = ptrTete->getRefSuivante();
+        Cellule<TypeInfo> *ptrPrecedCellue = ptrTete;
+
+        while(ptrCurrentCell){
+            if (ptrPrecedCellue->getInfo() == ptrCurrentCell->getInfo()){
+                ptrPrecedCellue->setSuivante(ptrCurrentCell->getRefSuivante());
+                ptrCurrentCell->setSuivante(nullptr);
+                delete ptrCurrentCell;
+                nbCellules--;
+                ptrCurrentCell = ptrPrecedCellue->getRefSuivante();
+            }else{
+                ptrCurrentCell = ptrCurrentCell->getRefSuivante();
+                ptrPrecedCellue = ptrPrecedCellue->getRefSuivante();
+            }
+        }
+    }
+
 }
 
 /**
@@ -310,11 +325,18 @@ void ListeTrieeChainee<TypeInfo>::afficheCroissantRecWorker(const Cellule<TypeIn
  */
 template<class TypeInfo>
 bool ListeTrieeChainee<TypeInfo>::estEnsemble() const {
-    /*
-     * A COMPLETER
-     */
-    // supprimer à partir d'ici après complétion
-    return false;
+    if (!ptrTete){
+        return true;
+    }
+    Cellule<TypeInfo> *ptrCurrentCell = ptrTete->getRefSuivante();
+    Cellule<TypeInfo> *ptrPrecedCellue = ptrTete;
+
+    while(ptrCurrentCell && ptrPrecedCellue->getInfo() != ptrCurrentCell->getInfo()){
+        ptrCurrentCell = ptrCurrentCell->getRefSuivante();
+        ptrPrecedCellue = ptrPrecedCellue->getRefSuivante();
+    }
+
+    return !ptrCurrentCell;
 }
 
 /**
@@ -335,10 +357,34 @@ ListeTrieeChainee<TypeInfo>* ListeTrieeChainee<TypeInfo>::insersectionAvec(const
     //pointeur sur la première Cellule de chacun des deux ensembles
     Cellule<TypeInfo>* ptrListeEnsembleA = this->ptrTete;
     Cellule<TypeInfo>* ptrListeEnsembleB = ensembleB->ptrTete;
+    Cellule<TypeInfo>* currentResultCell = nullptr;
 
-    /*
-     * A COMPLETER
-     */
+    while (ptrListeEnsembleA && ptrListeEnsembleB) {
+        TypeInfo infoA = ptrListeEnsembleA->getInfo();
+        TypeInfo infoB = ptrListeEnsembleB->getInfo();
+
+        if(infoA == infoB) {
+            Cellule<TypeInfo> *newCell = new Cellule<TypeInfo>(infoA);
+            if (!currentResultCell) {
+                ptrEnsembleResultat->ptrTete = newCell;
+                currentResultCell = ptrEnsembleResultat->ptrTete;
+            } else {
+                currentResultCell->setSuivante(newCell);
+                currentResultCell = currentResultCell->getRefSuivante();
+            }
+            ptrEnsembleResultat->nbCellules += 1;
+        }
+        if (infoA < infoB) {
+            ptrListeEnsembleA = ptrListeEnsembleA->getRefSuivante();
+        }else if(infoA == infoB){
+            ptrListeEnsembleB = ptrListeEnsembleB->getRefSuivante();
+            ptrListeEnsembleA = ptrListeEnsembleA->getRefSuivante();
+        }else{
+            ptrListeEnsembleB = ptrListeEnsembleB->getRefSuivante();
+        }
+    }
+
+    ptrEnsembleResultat->supprimeToutesDuplications();
 
     return ptrEnsembleResultat;
 } // end intersectionAvec
@@ -361,10 +407,41 @@ ListeTrieeChainee<TypeInfo>* ListeTrieeChainee<TypeInfo>::unionAvec(const ListeT
     //pointeur sur la première Cellule de chacun des deux ensembles
     Cellule<TypeInfo>* ptrListeEnsembleA = this->ptrTete;
     Cellule<TypeInfo>* ptrListeEnsembleB = ensembleB->ptrTete;
+    Cellule<TypeInfo>* currentResultCell = nullptr;
 
-    /*
-     * A COMPLETER
-     */
+
+    while (ptrListeEnsembleA || ptrListeEnsembleB) {
+        TypeInfo infoA = (ptrListeEnsembleA ? ptrListeEnsembleA->getInfo() : NULL);
+        TypeInfo infoB = (ptrListeEnsembleB ? ptrListeEnsembleB->getInfo() : NULL);
+        Cellule<TypeInfo>* newCell;
+
+        if(infoA == NULL){
+            newCell = new Cellule<TypeInfo>(infoB);
+        }else if(infoB == NULL){
+            newCell = new Cellule<TypeInfo>(infoA);
+        } else{
+            newCell = new Cellule<TypeInfo>(infoA < infoB ? infoA : infoB);
+        }
+        if (!currentResultCell) {
+            ptrEnsembleResultat->ptrTete = newCell;
+            currentResultCell = ptrEnsembleResultat->ptrTete;
+        } else {
+            currentResultCell->setSuivante(newCell);
+            currentResultCell = currentResultCell->getRefSuivante();
+        }
+
+        ptrEnsembleResultat->nbCellules += 1;
+
+        if (ptrListeEnsembleA && (infoB == NULL || infoA <= infoB)) {
+            ptrListeEnsembleA = ptrListeEnsembleA->getRefSuivante();
+        }
+        if (ptrListeEnsembleB && ( infoA == NULL || infoB <= infoA)) {
+            ptrListeEnsembleB = ptrListeEnsembleB->getRefSuivante();
+        }
+    }
+
+    ptrEnsembleResultat->supprimeToutesDuplications();
+
 
     //on a terminé
     return ptrEnsembleResultat;

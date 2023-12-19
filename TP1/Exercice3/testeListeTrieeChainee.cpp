@@ -539,7 +539,7 @@ est un ensemble ? : 1 (devrait répondre true)
 
 Une liste triée avec duplication
  -> 1 2 3 3 5
-est un ensemble ? : 0 (devrait répondre true)
+est un ensemble ? : 0 (devrait répondre false)
 
 
 **********************************
