@@ -231,12 +231,26 @@ bool ListeTrieeChainee<TypeInfo>::supprimePremOccInfoRec(const TypeInfo & uneInf
 template<class TypeInfo>
 bool ListeTrieeChainee<TypeInfo>::supprimePremOccInfoIter(const TypeInfo& uneInfo) {
 
-    Cellule<TypeInfo> *ptrCurrentCell = ptrTete;
+    Cellule<TypeInfo> *ptrCurrentCell = ptrTete->getRefSuivante();
+    Cellule<TypeInfo> *ptrPrecedCellue = ptrTete;
+
+    if(ptrPrecedCellue->getInfo() == uneInfo){
+        ptrTete = ptrCurrentCell;
+        ptrPrecedCellue->setSuivante(nullptr);
+        delete ptrPrecedCellue;
+        nbCellules--;
+        return true;
+    }
+
     while(ptrCurrentCell && ptrCurrentCell->getInfo() != uneInfo){
         ptrCurrentCell = ptrCurrentCell->getRefSuivante();
+        ptrPrecedCellue = ptrPrecedCellue->getRefSuivante();
     }
     if (ptrCurrentCell){
-        supprimeTeteWorker(ptrCurrentCell);
+        ptrPrecedCellue->setSuivante(ptrCurrentCell->getRefSuivante());
+        ptrCurrentCell->setSuivante(nullptr);
+        delete ptrCurrentCell;
+        nbCellules--;
         return true;
     }
     return false;
