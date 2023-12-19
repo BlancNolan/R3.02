@@ -93,6 +93,11 @@ private:
 
     XMLElement* getXmlelementFromIdAndCatRecWorker(XMLElement* currentElement, string &id, const char* categorie) const;
 
+    void printListeProvinceFromCountry(XMLElement* currentCountryPtr, vector<string> listeProvince)const ;
+
+    void getXmlelementCityAndProvinceFromName(XMLElement*& country, XMLElement*& city, XMLElement*& province,string cityName) const;
+
+    void getXmlelementCityAndProvinceFromAttribut(XMLElement*& country, XMLElement*& city, XMLElement*& province,const char* attribut, string value) const;
 
 
     // Procédures de découpage des chaînes en mots
