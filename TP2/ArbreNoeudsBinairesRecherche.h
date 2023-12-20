@@ -431,13 +431,14 @@ TypeInfo ArbreNoeudBinaireRecherche<TypeInfo>::getMaxRecWorker(const NoeudBinair
     if(ptrRac->getPtrFilsDroit() == nullptr)
         return ptrRac->getInfo();
     else{
-        getMaxRecWorker(ptrRac->getPtrFilsDroit());
+        return getMaxRecWorker(ptrRac->getPtrFilsDroit());
     }
 }
 
 
 template<class TypeInfo>
-bool ArbreNoeudBinaireRecherche<TypeInfo>::aPourSousArbreRecWorker(const NoeudBinaire<TypeInfo>* ptrRacCetArbre, const NoeudBinaire<TypeInfo>* ptrRacUnArbre) const {
+bool ArbreNoeudBinaireRecherche<TypeInfo>::aPourSousArbreRecWorker(const NoeudBinaire<TypeInfo>* ptrRacCetArbre,
+                                                                   const NoeudBinaire<TypeInfo>* ptrRacUnArbre) const {
 
     if (ptrRacUnArbre == nullptr)
         return true;
